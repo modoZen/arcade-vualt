@@ -1,6 +1,6 @@
 # SPEC 01 — Pantallas visuales del MVP
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** Ninguno (usa el theme/layout base ya presente en `app/globals.css` y `app/layout.tsx`)
 > **Date:** 2026-07-13
 > **Objective:** Portar las 5 pantallas del prototipo estático (Biblioteca, Detalle, Reproductor, Auth, Salón de la Fama) a rutas reales de Next.js App Router, con datos ficticios centralizados en `app/data` y sesión de usuario simulada vía Context, sin implementar lógica de juego real.
