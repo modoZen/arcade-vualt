@@ -79,6 +79,7 @@ Convenciones:
 - `av_user` es la misma clave de `localStorage` que ya usaba el prototipo para la sesión.
 - `user` es `null` cuando no hay sesión; logueado (real o invitado) es el string con el nombre.
 - El botón "JUGAR COMO INVITADO" llama `login("INVITADO")`.
+- Si `login` recibe un nombre vacío (o solo espacios), usa `"JUGADOR"` como valor por defecto, igual que el template original hacía con `"PLAYER1"`.
 - El botón "GUARDAR PUNTUACIÓN" del Reproductor solo cambia un estado local (`saved: true`) para mostrar el toast; no persiste en `localStorage`.
 
 ## Implementation plan
