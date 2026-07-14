@@ -1,6 +1,6 @@
 # SPEC 03 — Página About y envío de correo de contacto
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 01 (rutas base, Nav, `app/data/games.ts`), SPEC 02 (Home, Nav con Inicio/Biblioteca/Salón)
 > **Date:** 2026-07-14
 > **Objective:** Crear la pantalla "Acerca de" en `/acerca-de` (basada en `references/templates/home-about/about.jsx`) con un formulario de contacto que envía correos reales vía Resend a `maxdn.06@gmail.com`.
@@ -45,6 +45,7 @@ No se introduce ningún modelo de datos persistente.
    - Devuelve `200 { ok: true }` en éxito o `500 { error: "..." }` si Resend falla.
 
    Verificación: `curl -X POST /api/contacto` con body válido retorna `{ ok: true }` (cuando la key esté configurada).
+
 3. Portar a `app/globals.css` las clases CSS de About tomadas de `references/templates/home-about/styles.css` (`.about-hero`, `.highlight-row`, `.about-divider`, `.about-contact`, `.contact-form`, `.terminal-success`, etc.).
 4. Crear `app/acerca-de/page.tsx` con la sección hero/misión (kicker, título, texto de misión, highlight-row de 3 iconos) y el divisor decorativo, tomados del template. La página ya es visitable y visualmente completa, sin formulario funcional todavía.
 5. Agregar la sección de contacto a `app/acerca-de/page.tsx`: formulario (nombre, correo, mensaje) con estados `idle` / `sending` / `sent` / `error`. Al enviar, hace `fetch` a `POST /api/contacto`; mientras espera muestra `sending`, en éxito reutiliza la animación `terminal-success` existente, y en error muestra un bloque de error estilo terminal con botón para reintentar sin perder lo escrito.
