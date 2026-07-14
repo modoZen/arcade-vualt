@@ -10,10 +10,11 @@ export function Nav() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
 
-  const isActive = (name: "inicio" | "biblioteca" | "salon" | "auth") => {
+  const isActive = (name: "inicio" | "biblioteca" | "salon" | "acerca-de" | "auth") => {
     if (name === "inicio") return pathname === "/";
     if (name === "biblioteca") return pathname === "/juego" || pathname.startsWith("/juego/");
     if (name === "salon") return pathname === "/salon";
+    if (name === "acerca-de") return pathname === "/acerca-de";
     return pathname === "/auth";
   };
 
@@ -30,6 +31,7 @@ export function Nav() {
           <Link href="/" className={isActive("inicio") ? "active" : ""}>Inicio</Link>
           <Link href="/juego" className={isActive("biblioteca") ? "active" : ""}>Biblioteca</Link>
           <Link href="/salon" className={isActive("salon") ? "active" : ""}>Salón de la Fama</Link>
+          <Link href="/acerca-de" className={isActive("acerca-de") ? "active" : ""}>Acerca de</Link>
         </div>
         <div className="spacer"></div>
         <div className="coin-counter">
@@ -50,6 +52,7 @@ export function Nav() {
         <Link href="/" className={isActive("inicio") ? "active" : ""} onClick={close}>Inicio</Link>
         <Link href="/juego" className={isActive("biblioteca") ? "active" : ""} onClick={close}>Biblioteca</Link>
         <Link href="/salon" className={isActive("salon") ? "active" : ""} onClick={close}>Salón de la Fama</Link>
+        <Link href="/acerca-de" className={isActive("acerca-de") ? "active" : ""} onClick={close}>Acerca de</Link>
         <Link href="/auth" className={isActive("auth") ? "active" : ""} onClick={close}>{user ? "Cuenta" : "Iniciar Sesión"}</Link>
         <div style={{ flex: 1 }}></div>
         <div className="pixel" style={{ fontSize: 9, color: "var(--ink-faint)", letterSpacing: "0.16em" }}>CRÉDITOS · 03</div>
