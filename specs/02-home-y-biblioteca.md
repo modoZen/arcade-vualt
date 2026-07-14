@@ -1,6 +1,6 @@
 # SPEC 02 — Nuevo Home y reubicación de Biblioteca
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01 (rutas base, Nav, `app/data/games.ts`)
 > **Date:** 2026-07-14
 > **Objective:** Crear una nueva pantalla Home tipo landing en `/` (basada en `references/templates/home-about/home.jsx`), mover la pantalla Biblioteca de `/` a `/juego`, y agregar "Inicio" al Nav.
@@ -40,19 +40,19 @@ Este spec no introduce estructuras de datos nuevas. Reutiliza `Game`, `GAMES` y 
 
 ## Acceptance criteria
 
-- [ ] `/` carga sin errores en consola y muestra la nueva pantalla Home (hero, features, preview de juegos, stats, actividad, pricing, CTA final).
-- [ ] `/juego` carga sin errores y muestra la pantalla Biblioteca (buscador, chips, grid) con el mismo comportamiento que tenía antes en `/`.
-- [ ] El buscador y los chips de categoría en `/juego` siguen filtrando la grilla igual que antes.
-- [ ] En el Home, el botón "EXPLORAR JUEGOS" y "VER TODOS LOS JUEGOS" navegan a `/juego`.
-- [ ] En el Home, el botón "CREAR CUENTA" y "EMPEZAR GRATIS" navegan a `/auth`.
-- [ ] En el Home, el botón "VER SALÓN" navega a `/salon`.
-- [ ] En el Home, cada mini-card de "Juegos disponibles ahora" navega a `/juego/[id]` del juego correspondiente.
-- [ ] El CTA final ("INSERTAR MONEDA") navega a `/juego`.
-- [ ] El Nav muestra 3 links: "Inicio", "Biblioteca", "Salón de la Fama".
-- [ ] El link "Inicio" del Nav está activo (resaltado) en `/` y navega a `/`.
-- [ ] El link "Biblioteca" del Nav está activo en `/juego` y en `/juego/[id]` y `/juego/[id]/jugar`, y navega a `/juego`.
-- [ ] El logo del Nav sigue navegando a `/`.
-- [ ] El menú móvil del Nav muestra los mismos 3 links y funciona igual que antes.
+- [x] `/` carga sin errores en consola y muestra la nueva pantalla Home (hero, features, preview de juegos, stats, actividad, pricing, CTA final).
+- [x] `/juego` carga sin errores y muestra la pantalla Biblioteca (buscador, chips, grid) con el mismo comportamiento que tenía antes en `/`.
+- [x] El buscador y los chips de categoría en `/juego` siguen filtrando la grilla igual que antes.
+- [x] En el Home, el botón "EXPLORAR JUEGOS" y "VER TODOS LOS JUEGOS" navegan a `/juego`.
+- [x] En el Home, el botón "CREAR CUENTA" y "EMPEZAR GRATIS" navegan a `/auth`.
+- [x] En el Home, el botón "VER SALÓN" navega a `/salon`.
+- [x] En el Home, cada mini-card de "Juegos disponibles ahora" navega a `/juego/[id]` del juego correspondiente.
+- [x] El CTA final ("INSERTAR MONEDA") navega a `/juego`.
+- [x] El Nav muestra 3 links: "Inicio", "Biblioteca", "Salón de la Fama".
+- [x] El link "Inicio" del Nav está activo (resaltado) en `/` y navega a `/`.
+- [x] El link "Biblioteca" del Nav está activo en `/juego` y en `/juego/[id]` y `/juego/[id]/jugar`, y navega a `/juego`.
+- [x] El logo del Nav sigue navegando a `/`.
+- [x] El menú móvil del Nav muestra los mismos 3 links y funciona igual que antes.
 
 ## Decisions
 
