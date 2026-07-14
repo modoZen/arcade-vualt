@@ -1,6 +1,6 @@
 # SPEC 01 — Pantallas visuales del MVP
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** Ninguno (usa el theme/layout base ya presente en `app/globals.css` y `app/layout.tsx`)
 > **Date:** 2026-07-13
 > **Objective:** Portar las 5 pantallas del prototipo estático (Biblioteca, Detalle, Reproductor, Auth, Salón de la Fama) a rutas reales de Next.js App Router, con datos ficticios centralizados en `app/data` y sesión de usuario simulada vía Context, sin implementar lógica de juego real.
@@ -97,29 +97,29 @@ Convenciones:
 
 ## Acceptance criteria
 
-- [ ] La app compila y `/` carga sin errores en consola, mostrando la pantalla Biblioteca.
-- [ ] El buscador en Biblioteca filtra la grilla por título en tiempo real.
-- [ ] Los chips de categoría en Biblioteca (incluyendo "TODOS") filtran la grilla.
-- [ ] Click en una card o en su botón "JUGAR" navega a `/juego/[id]` del juego correspondiente.
-- [ ] Visitar `/juego/id-inexistente` muestra la página 404 de Next.js.
-- [ ] `/juego/[id]` muestra cover, tags, descripción larga, stats (partidas, mejor global, dificultad) y la tabla de mejores puntuaciones vía `seededScores`.
-- [ ] El botón "JUGAR AHORA" en Detalle navega a `/juego/[id]/jugar`.
-- [ ] El botón "VOLVER AL VAULT" en Detalle navega a `/`.
-- [ ] `/juego/[id]/jugar` incrementa el puntaje automáticamente mientras no está pausado ni terminado.
-- [ ] El botón "PAUSA" detiene el incremento de puntaje y cambia su texto a "REANUDAR".
-- [ ] El botón "FIN" abre el modal de fin de partida con el puntaje final.
-- [ ] Guardar la puntuación en el modal muestra el toast "PUNTUACIÓN GUARDADA" (sin persistir en `localStorage`).
-- [ ] "JUGAR DE NUEVO" reinicia puntaje, vidas, nivel y cierra el modal.
-- [ ] "VOLVER AL VAULT" desde el modal navega a `/`.
-- [ ] `/auth` permite enviar el formulario de login con cualquier texto (o vacío) y redirige a `/` con el usuario logueado en el Nav.
-- [ ] El botón "JUGAR COMO INVITADO" en `/auth` loguea como "INVITADO" y redirige a `/`.
-- [ ] Los botones sociales (GOOGLE/GITHUB) en `/auth` no ejecutan ninguna acción.
-- [ ] Con sesión activa, el Nav muestra `{user} ▾`; al hacer click cierra sesión y vuelve a mostrar "Iniciar Sesión".
-- [ ] Recargar la página mantiene la sesión (persistencia en `localStorage["av_user"]`).
-- [ ] `/salon` muestra tabs por cada juego de `GAMES`, un podio (top 3) y una tabla completa vía `seededScores`.
-- [ ] Con sesión activa, `/salon` muestra la fila "tu mejor marca" al final de la tabla; sin sesión, no aparece.
-- [ ] El menú móvil (hamburguesa) del Nav abre/cierra el panel lateral en pantallas angostas.
-- [ ] El enlace del logo en el Nav navega a `/` desde cualquier pantalla.
+- [x] La app compila y `/` carga sin errores en consola, mostrando la pantalla Biblioteca.
+- [x] El buscador en Biblioteca filtra la grilla por título en tiempo real.
+- [x] Los chips de categoría en Biblioteca (incluyendo "TODOS") filtran la grilla.
+- [x] Click en una card o en su botón "JUGAR" navega a `/juego/[id]` del juego correspondiente.
+- [x] Visitar `/juego/id-inexistente` muestra la página 404 de Next.js.
+- [x] `/juego/[id]` muestra cover, tags, descripción larga, stats (partidas, mejor global, dificultad) y la tabla de mejores puntuaciones vía `seededScores`.
+- [x] El botón "JUGAR AHORA" en Detalle navega a `/juego/[id]/jugar`.
+- [x] El botón "VOLVER AL VAULT" en Detalle navega a `/`.
+- [x] `/juego/[id]/jugar` incrementa el puntaje automáticamente mientras no está pausado ni terminado.
+- [x] El botón "PAUSA" detiene el incremento de puntaje y cambia su texto a "REANUDAR".
+- [x] El botón "FIN" abre el modal de fin de partida con el puntaje final.
+- [x] Guardar la puntuación en el modal muestra el toast "PUNTUACIÓN GUARDADA" (sin persistir en `localStorage`).
+- [x] "JUGAR DE NUEVO" reinicia puntaje, vidas, nivel y cierra el modal.
+- [x] "VOLVER AL VAULT" desde el modal navega a `/`.
+- [x] `/auth` permite enviar el formulario de login con cualquier texto (o vacío) y redirige a `/` con el usuario logueado en el Nav.
+- [x] El botón "JUGAR COMO INVITADO" en `/auth` loguea como "INVITADO" y redirige a `/`.
+- [x] Los botones sociales (GOOGLE/GITHUB) en `/auth` no ejecutan ninguna acción.
+- [x] Con sesión activa, el Nav muestra `{user} ▾`; al hacer click cierra sesión y vuelve a mostrar "Iniciar Sesión".
+- [x] Recargar la página mantiene la sesión (persistencia en `localStorage["av_user"]`).
+- [x] `/salon` muestra tabs por cada juego de `GAMES`, un podio (top 3) y una tabla completa vía `seededScores`.
+- [x] Con sesión activa, `/salon` muestra la fila "tu mejor marca" al final de la tabla; sin sesión, no aparece.
+- [x] El menú móvil (hamburguesa) del Nav abre/cierra el panel lateral en pantallas angostas.
+- [x] El enlace del logo en el Nav navega a `/` desde cualquier pantalla.
 
 ## Decisions
 
