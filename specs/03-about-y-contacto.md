@@ -1,6 +1,6 @@
 # SPEC 03 — Página About y envío de correo de contacto
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01 (rutas base, Nav, `app/data/games.ts`), SPEC 02 (Home, Nav con Inicio/Biblioteca/Salón)
 > **Date:** 2026-07-14
 > **Objective:** Crear la pantalla "Acerca de" en `/acerca-de` (basada en `references/templates/home-about/about.jsx`) con un formulario de contacto que envía correos reales vía Resend a `maxdn.06@gmail.com`.
@@ -53,18 +53,18 @@ No se introduce ningún modelo de datos persistente.
 
 ## Acceptance criteria
 
-- [ ] `/acerca-de` carga sin errores en consola y muestra la sección hero/misión con el texto y los 3 highlights del template.
-- [ ] El divisor decorativo y la sección de contacto (intro + tips + formulario) se muestran igual que en el template.
-- [ ] El link "Acerca de" aparece en el Nav de escritorio y en el menú móvil, y navega a `/acerca-de`.
-- [ ] El link "Acerca de" del Nav queda activo (resaltado) cuando la ruta actual es `/acerca-de`.
-- [ ] Si se intenta enviar el formulario con algún campo vacío, se dispara el efecto "shake" y no se hace ningún request.
-- [ ] `POST /api/contacto` con `{ name, email, msg }` válidos y `RESEND_API_KEY` configurada responde `200 { ok: true }` y el correo llega a `maxdn.06@gmail.com` con `reply_to` igual al correo del formulario.
-- [ ] `POST /api/contacto` con algún campo vacío responde `400 { error: "..." }`.
-- [ ] `POST /api/contacto` responde `500 { error: "..." }` si Resend falla (ej. `RESEND_API_KEY` inválida o ausente).
-- [ ] Mientras el formulario espera la respuesta del servidor, se muestra el estado `sending` (feedback visual de envío en curso).
-- [ ] En éxito, el formulario muestra la animación `terminal-success` con el nombre ingresado, igual que el template.
-- [ ] En error, el formulario muestra un bloque de error estilo terminal con un botón para reintentar, sin perder los datos escritos.
-- [ ] Después de un envío exitoso, el botón "ENVIAR OTRO MENSAJE" limpia el formulario y vuelve al estado `idle`.
+- [x] `/acerca-de` carga sin errores en consola y muestra la sección hero/misión con el texto y los 3 highlights del template.
+- [x] El divisor decorativo y la sección de contacto (intro + tips + formulario) se muestran igual que en el template.
+- [x] El link "Acerca de" aparece en el Nav de escritorio y en el menú móvil, y navega a `/acerca-de`.
+- [x] El link "Acerca de" del Nav queda activo (resaltado) cuando la ruta actual es `/acerca-de`.
+- [x] Si se intenta enviar el formulario con algún campo vacío, se dispara el efecto "shake" y no se hace ningún request.
+- [x] `POST /api/contacto` con `{ name, email, msg }` válidos y `RESEND_API_KEY` configurada responde `200 { ok: true }` y el correo llega a `maxdn.06@gmail.com` con `reply_to` igual al correo del formulario.
+- [x] `POST /api/contacto` con algún campo vacío responde `400 { error: "..." }`.
+- [x] `POST /api/contacto` responde `500 { error: "..." }` si Resend falla (ej. `RESEND_API_KEY` inválida o ausente).
+- [x] Mientras el formulario espera la respuesta del servidor, se muestra el estado `sending` (feedback visual de envío en curso).
+- [x] En éxito, el formulario muestra la animación `terminal-success` con el nombre ingresado, igual que el template.
+- [x] En error, el formulario muestra un bloque de error estilo terminal con un botón para reintentar, sin perder los datos escritos.
+- [x] Después de un envío exitoso, el botón "ENVIAR OTRO MENSAJE" limpia el formulario y vuelve al estado `idle`.
 
 ## Decisions
 
