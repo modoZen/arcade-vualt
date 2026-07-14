@@ -1,6 +1,6 @@
 # SPEC 02 — Nuevo Home y reubicación de Biblioteca
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** SPEC 01 (rutas base, Nav, `app/data/games.ts`)
 > **Date:** 2026-07-14
 > **Objective:** Crear una nueva pantalla Home tipo landing en `/` (basada en `references/templates/home-about/home.jsx`), mover la pantalla Biblioteca de `/` a `/juego`, y agregar "Inicio" al Nav.
