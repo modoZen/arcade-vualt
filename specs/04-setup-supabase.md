@@ -1,6 +1,6 @@
 # SPEC 04 — Setup e integración base de Supabase
 
-> **Status:** Draft
+> **Status:** Approved
 > **Depends on:** Ninguna spec funcionalmente; reutiliza el patrón de variables de entorno de SPEC 03 (`.env.local` no versionado, documentado con placeholder vacío en `.env.template`).
 > **Date:** 2026-07-15
 > **Objective:** Instalar y configurar los clientes base de Supabase (`@supabase/ssr` + `@supabase/supabase-js`) para Next.js App Router en `lib/supabase/`, sin conectar ninguna autenticación ni feature todavía, dejando la infraestructura lista para specs futuras.
