@@ -1,6 +1,6 @@
 # SPEC 04 — Setup e integración base de Supabase
 
-> **Status:** Approved
+> **Status:** Implementado
 > **Depends on:** Ninguna spec funcionalmente; reutiliza el patrón de variables de entorno de SPEC 03 (`.env.local` no versionado, documentado con placeholder vacío en `.env.template`).
 > **Date:** 2026-07-15
 > **Objective:** Instalar y configurar los clientes base de Supabase (`@supabase/ssr` + `@supabase/supabase-js`) para Next.js App Router en `lib/supabase/`, sin conectar ninguna autenticación ni feature todavía, dejando la infraestructura lista para specs futuras.
@@ -36,14 +36,14 @@ No se introduce ningún modelo de datos persistente en este spec. Los clientes d
 
 ## Acceptance criteria
 
-- [ ] `lib/supabase/client.ts` existe y exporta `createClient()` usando `createBrowserClient` de `@supabase/ssr`.
-- [ ] `lib/supabase/server.ts` existe y exporta `createClient()` (async) usando `createServerClient` de `@supabase/ssr` con `cookies()` de `next/headers`.
-- [ ] `@supabase/supabase-js` y `@supabase/ssr` aparecen como dependencias en `package.json`.
-- [ ] `.env.local` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con valores reales.
-- [ ] `.env.template` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` como placeholders vacíos (sin valores reales).
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
-- [ ] Ninguna pantalla, componente ni ruta existente cambia de comportamiento (no hay features conectadas a estos clientes todavía).
+- [x] `lib/supabase/client.ts` existe y exporta `createClient()` usando `createBrowserClient` de `@supabase/ssr`.
+- [x] `lib/supabase/server.ts` existe y exporta `createClient()` (async) usando `createServerClient` de `@supabase/ssr` con `cookies()` de `next/headers`.
+- [x] `@supabase/supabase-js` y `@supabase/ssr` aparecen como dependencias en `package.json`.
+- [x] `.env.local` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` con valores reales.
+- [x] `.env.template` contiene `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` como placeholders vacíos (sin valores reales).
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] Ninguna pantalla, componente ni ruta existente cambia de comportamiento (no hay features conectadas a estos clientes todavía).
 
 ## Decisions
 
