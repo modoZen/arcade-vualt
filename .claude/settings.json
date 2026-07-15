@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/max/udemy/claudeCode/05-arcade-vault/.claude/hooks/format-file.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
