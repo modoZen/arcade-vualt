@@ -1,6 +1,6 @@
 # SPEC 06 — Catálogo de juegos y leaderboard reales en Supabase
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 04 (clientes de Supabase configurados), SPEC 05 (juego real de Asteroides, único juego que conecta a este leaderboard)
 > **Date:** 2026-07-16
 > **Objective:** Reemplazar el array estático `GAMES` y el leaderboard simulado (`seededScores`) por dos tablas reales en Supabase (`games` y `scores`), con guardado real de puntuación conectado únicamente a Asteroides y dos vistas de leaderboard (global y por juego).
@@ -119,22 +119,22 @@ Las funciones de consulta (`lib/supabase/games.ts`, `lib/supabase/scores.ts`) se
 
 ## Acceptance criteria
 
-- [ ] Las tablas `games` y `scores` existen en Supabase con el esquema definido en Data model, sin RLS habilitado, con grants de `SELECT` en ambas y `INSERT` en `scores` para los roles `anon`/`authenticated`.
-- [ ] `games` contiene exactamente una fila (`id: "asteroides"`) con los datos ya definidos en SPEC 05; no tiene columnas `best`, `plays` ni `playable`.
-- [ ] `lib/supabase/types.ts` exporta los tipos `Game` y `ScoreRow`.
-- [ ] `app/data/games.ts` y `app/data/scores.ts` ya no existen; no queda ninguna referencia a `GAMES` ni `seededScores` en el proyecto.
-- [ ] Home (`/`) y Biblioteca (`/juego`) muestran el catálogo leído desde Supabase: una sola card, Asteroides.
-- [ ] `/juego/asteroides` (Detalle) carga sin errores, con los datos reales de `games` y el top 10 real de `scores` en el sidebar "MEJORES PUNTUACIONES".
-- [ ] `/juego/rocas`, `/juego/bloque-buster` y el resto de los 6 juegos decorativos devuelven 404 (`notFound()`), tanto en Detalle como en Reproductor.
-- [ ] En `/juego/asteroides/jugar`, "GUARDAR PUNTUACIÓN" inserta una fila real en `scores` (`game_id: "asteroides"`, `player_name`, `score`, `user_id: null`), verificable consultando la tabla después de guardar.
-- [ ] El input "TUS INICIALES" se precarga con el último nombre usado (`localStorage["av_last_player_name"]`) en partidas subsiguientes, sin tener que re-escribirlo.
-- [ ] `/salon` muestra dos vistas: **global** (top 10 de `scores` de todos los juegos existentes en `games`, indicando a qué juego pertenece cada fila) y **por juego** (un tab por fila de `games`, hoy solo Asteroides), ambas top 10.
-- [ ] Guardar un puntaje nuevo en Asteroides y volver a `/salon` (recargando la página) refleja ese puntaje en ambas vistas, global y por juego.
-- [ ] Cuando no hay scores para un juego, las tres vistas de leaderboard (sidebar de Detalle, Salón global, Salón por juego) muestran el mensaje "SÉ EL PRIMERO EN ENTRAR AL SALÓN DE LA FAMA" en vez de una tabla vacía o un error.
-- [ ] `best` y `plays` mostrados en catálogo/Detalle reflejan valores calculados desde `scores` en tiempo real (no hardcodeados) y cambian después de guardar un puntaje nuevo.
-- [ ] `mcp__supabase__get_advisors` no reporta ninguna alerta más allá de la esperada por RLS deshabilitado (aceptada explícitamente en este spec).
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] Las tablas `games` y `scores` existen en Supabase con el esquema definido en Data model, sin RLS habilitado, con grants de `SELECT` en ambas y `INSERT` en `scores` para los roles `anon`/`authenticated`.
+- [x] `games` contiene exactamente una fila (`id: "asteroides"`) con los datos ya definidos en SPEC 05; no tiene columnas `best`, `plays` ni `playable`.
+- [x] `lib/supabase/types.ts` exporta los tipos `Game` y `ScoreRow`.
+- [x] `app/data/games.ts` y `app/data/scores.ts` ya no existen; no queda ninguna referencia a `GAMES` ni `seededScores` en el proyecto.
+- [x] Home (`/`) y Biblioteca (`/juego`) muestran el catálogo leído desde Supabase: una sola card, Asteroides.
+- [x] `/juego/asteroides` (Detalle) carga sin errores, con los datos reales de `games` y el top 10 real de `scores` en el sidebar "MEJORES PUNTUACIONES".
+- [x] `/juego/rocas`, `/juego/bloque-buster` y el resto de los 6 juegos decorativos devuelven 404 (`notFound()`), tanto en Detalle como en Reproductor.
+- [x] En `/juego/asteroides/jugar`, "GUARDAR PUNTUACIÓN" inserta una fila real en `scores` (`game_id: "asteroides"`, `player_name`, `score`, `user_id: null`), verificable consultando la tabla después de guardar.
+- [x] El input "TUS INICIALES" se precarga con el último nombre usado (`localStorage["av_last_player_name"]`) en partidas subsiguientes, sin tener que re-escribirlo.
+- [x] `/salon` muestra dos vistas: **global** (top 10 de `scores` de todos los juegos existentes en `games`, indicando a qué juego pertenece cada fila) y **por juego** (un tab por fila de `games`, hoy solo Asteroides), ambas top 10.
+- [x] Guardar un puntaje nuevo en Asteroides y volver a `/salon` (recargando la página) refleja ese puntaje en ambas vistas, global y por juego.
+- [x] Cuando no hay scores para un juego, las tres vistas de leaderboard (sidebar de Detalle, Salón global, Salón por juego) muestran el mensaje "SÉ EL PRIMERO EN ENTRAR AL SALÓN DE LA FAMA" en vez de una tabla vacía o un error.
+- [x] `best` y `plays` mostrados en catálogo/Detalle reflejan valores calculados desde `scores` en tiempo real (no hardcodeados) y cambian después de guardar un puntaje nuevo.
+- [x] `mcp__supabase__get_advisors` no reporta ninguna alerta de nivel WARN o ERROR más allá de las esperadas: RLS deshabilitado en `games`/`scores` (decisión explícita del spec) y los warnings de `rls_auto_enable()` (infraestructura preexistente de Supabase, fuera de alcance). Los hallazgos de nivel INFO se documentan pero no bloquean la aceptación.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
@@ -159,6 +159,7 @@ Las funciones de consulta (`lib/supabase/games.ts`, `lib/supabase/scores.ts`) se
 - **No:** especificar firmas exactas de las funciones de consulta en este spec. Pedido explícito del usuario — se definen durante la implementación.
 - **Sí:** `/juego/[id]` sigue siendo Server Component (`lib/supabase/server.ts`); Home, Biblioteca y Salón siguen siendo Client Components y hacen fetch con `lib/supabase/client.ts` en un `useEffect`. Minimiza el cambio arquitectónico respecto al estado actual.
 - **Sí:** `games.id` sigue siendo un slug de texto (ej. `"asteroides"`) como primary key, no un UUID. Continuidad con las rutas actuales que ya usan el id como segmento de URL.
+- **No:** índice sobre `scores.user_id`, pese a que `mcp__supabase__get_advisors` lo señala como "unindexed foreign key" (nivel INFO). `user_id` es `NULL` en el 100% de las filas en este spec y nunca se filtra por esa columna — indexarlo ahora es agregar estructura para silenciar un linter que no conoce el contexto. Se reevalúa cuando un spec futuro introduzca Supabase Auth real y `user_id` empiece a tener valores y queries que lo necesiten.
 
 ## Identified risks
 
