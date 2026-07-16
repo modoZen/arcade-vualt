@@ -1,6 +1,6 @@
 # SPEC 05 — Juego real de Asteroides
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 01 (rutas base, `GAMES`, pantalla Detalle `/juego/[id]`, patrón visual del Reproductor — HUD, modal de fin de partida, CRT)
 > **Date:** 2026-07-15
 > **Objective:** Agregar el juego real de Asteroids (adaptado desde `references/started-games/02-asteroids/game.js`) como una nueva entrada `asteroides` en el catálogo, con su propio Reproductor en la ruta estática `/juego/asteroides/jugar` (que Next.js resuelve por precedencia sobre `/juego/[id]/jugar`), sincronizando el motor del juego con el HUD y los controles (pausa/fin/reinicio) existentes.
@@ -96,25 +96,25 @@ const [saved, setSaved] = useState(false);
 
 ## Acceptance criteria
 
-- [ ] `GAMES` en `app/data/games.ts` contiene una entrada con `id: "asteroides"` (`title: "ASTEROIDES"`, `cat: "SHOOTER"`, `cover: "cover-asteroides"`); la entrada `rocas` no cambió.
-- [ ] `app/globals.css` define `.cover-asteroides` y la card de "asteroides" en Biblioteca/Home muestra ese cover (distinto del de `rocas`).
-- [ ] `/juego/asteroides` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/asteroides/jugar`.
-- [ ] `/juego/asteroides/jugar` resuelve la ruta estática `app/juego/asteroides/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
-- [ ] En `/juego/asteroides/jugar` se ve un `<canvas>` con el juego real corriendo (nave, asteroides, wrap toroidal) en vez de los divs decorativos `.game-arena`.
-- [ ] Las flechas (`←`/`→`/`↑`) rotan/propulsan la nave y `Espacio` dispara, incluyendo el disparo triple al recoger el power-up `3x`.
-- [ ] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego (no un `setInterval` aleatorio).
-- [ ] El HUD interno del canvas (`SCORE`, `NIVEL`, iconos de vidas, indicador `3x`) se sigue dibujando dentro del canvas, sin duplicar el overlay de game over.
-- [ ] El canvas ya no dibuja su propio overlay de "GAME OVER"; ese estado se refleja solo en el modal de React.
-- [ ] Presionar `Espacio` estando en el estado interno de gameover del motor **no** reinicia el juego por sí solo (el reinicio depende exclusivamente de "JUGAR DE NUEVO").
-- [ ] El botón "PAUSA" congela el movimiento de nave/asteroides/balas (no siguen avanzando detrás del overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
-- [ ] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
-- [ ] Perder la tercera vida dentro del juego abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
-- [ ] Guardar la puntuación en el modal muestra el toast "PUNTUACIÓN GUARDADA" (sin persistir en `localStorage`, igual que el resto de la plataforma).
-- [ ] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (nave centrada, 3 vidas, nivel 1, puntaje 0, asteroides reposicionados) y cierra el modal.
-- [ ] "SALIR" navega a `/juego/asteroides` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
-- [ ] `/juego/rocas` y el resto del catálogo (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `ranaria`, `duelo-pixel`) siguen mostrando la simulación decorativa sin ningún cambio de comportamiento.
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] `GAMES` en `app/data/games.ts` contiene una entrada con `id: "asteroides"` (`title: "ASTEROIDES"`, `cat: "SHOOTER"`, `cover: "cover-asteroides"`); la entrada `rocas` no cambió.
+- [x] `app/globals.css` define `.cover-asteroides` y la card de "asteroides" en Biblioteca/Home muestra ese cover (distinto del de `rocas`).
+- [x] `/juego/asteroides` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/asteroides/jugar`.
+- [x] `/juego/asteroides/jugar` resuelve la ruta estática `app/juego/asteroides/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
+- [x] En `/juego/asteroides/jugar` se ve un `<canvas>` con el juego real corriendo (nave, asteroides, wrap toroidal) en vez de los divs decorativos `.game-arena`.
+- [x] Las flechas (`←`/`→`/`↑`) rotan/propulsan la nave y `Espacio` dispara, incluyendo el disparo triple al recoger el power-up `3x`.
+- [x] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego (no un `setInterval` aleatorio).
+- [x] El HUD interno del canvas (`SCORE`, `NIVEL`, iconos de vidas, indicador `3x`) se sigue dibujando dentro del canvas, sin duplicar el overlay de game over.
+- [x] El canvas ya no dibuja su propio overlay de "GAME OVER"; ese estado se refleja solo en el modal de React.
+- [x] Presionar `Espacio` estando en el estado interno de gameover del motor **no** reinicia el juego por sí solo (el reinicio depende exclusivamente de "JUGAR DE NUEVO").
+- [x] El botón "PAUSA" congela el movimiento de nave/asteroides/balas (no siguen avanzando detrás del overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
+- [x] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
+- [x] Perder la tercera vida dentro del juego abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
+- [x] Guardar la puntuación en el modal muestra el toast "PUNTUACIÓN GUARDADA" (sin persistir en `localStorage`, igual que el resto de la plataforma).
+- [x] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (nave centrada, 3 vidas, nivel 1, puntaje 0, asteroides reposicionados) y cierra el modal.
+- [x] "SALIR" navega a `/juego/asteroides` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
+- [x] `/juego/rocas` y el resto del catálogo (`bloque-buster`, `caida`, `serpentina`, `gloton`, `invasores`, `ranaria`, `duelo-pixel`) siguen mostrando la simulación decorativa sin ningún cambio de comportamiento.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
