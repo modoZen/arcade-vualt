@@ -1,6 +1,6 @@
 # SPEC 06 — Catálogo de juegos y leaderboard reales en Supabase
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 04 (clientes de Supabase configurados), SPEC 05 (juego real de Asteroides, único juego que conecta a este leaderboard)
 > **Date:** 2026-07-16
 > **Objective:** Reemplazar el array estático `GAMES` y el leaderboard simulado (`seededScores`) por dos tablas reales en Supabase (`games` y `scores`), con guardado real de puntuación conectado únicamente a Asteroides y dos vistas de leaderboard (global y por juego).
