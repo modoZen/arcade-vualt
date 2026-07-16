@@ -3,8 +3,10 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GAMES } from "@/app/data/games";
+import { createClient } from "@/lib/supabase/client";
+import { getGameById } from "@/lib/supabase/games";
 import { useAuth } from "@/app/context/AuthContext";
+import type { Game } from "@/lib/supabase/types";
 
 export default function GamePlayerPage({
   params,
@@ -12,7 +14,15 @@ export default function GamePlayerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const game = GAMES.find((g) => g.id === id);
+  const [game, setGame] = useState<Game | null>(null);
+  const [loadingGame, setLoadingGame] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient();
+    getGameById(supabase, id)
+      .then(setGame)
+      .finally(() => setLoadingGame(false));
+  }, [id]);
 
   const { user } = useAuth();
   const [score, setScore] = useState(0);
@@ -25,11 +35,24 @@ export default function GamePlayerPage({
 
   useEffect(() => {
     if (!game || over || paused) return;
-    const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
+    const t = setInterval(
+      () => setScore((s) => s + Math.floor(10 + Math.random() * 90)),
+      220,
+    );
     return () => clearInterval(t);
   }, [game, over, paused]);
 
-  if (!game) notFound();
+  if (!loadingGame && !game) notFound();
+  if (loadingGame || !game) {
+    return (
+      <div
+        className="av-player fade-in mono"
+        style={{ padding: 80, textAlign: "center", color: "var(--ink-dim)" }}
+      >
+        CARGANDO…
+      </div>
+    );
+  }
 
   const endGame = () => setOver(true);
   const restart = () => {
@@ -46,7 +69,9 @@ export default function GamePlayerPage({
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <div className="hud-stat">
             <div className="l">Jugador</div>
-            <div className="v" style={{ color: "var(--ink)" }}>{name}</div>
+            <div className="v" style={{ color: "var(--ink)" }}>
+              {name}
+            </div>
           </div>
           <div className="hud-stat">
             <div className="l">Puntuación</div>
@@ -65,8 +90,12 @@ export default function GamePlayerPage({
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
-          <button className="btn magenta" onClick={endGame}>FIN</button>
-          <Link href={`/juego/${game.id}`} className="btn ghost">SALIR</Link>
+          <button className="btn magenta" onClick={endGame}>
+            FIN
+          </button>
+          <Link href={`/juego/${game.id}`} className="btn ghost">
+            SALIR
+          </Link>
         </div>
       </div>
 
@@ -80,12 +109,22 @@ export default function GamePlayerPage({
             <div className="player-ship"></div>
           </div>
           {paused && (
-            <div className="crt-content" style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}>
+            <div
+              className="crt-content"
+              style={{ background: "rgba(0,0,0,0.6)", zIndex: 5 }}
+            >
               <div>
-                <div className="pixel neon-yellow" style={{ fontSize: 22 }}>EN PAUSA</div>
+                <div className="pixel neon-yellow" style={{ fontSize: 22 }}>
+                  EN PAUSA
+                </div>
                 <div
                   className="mono"
-                  style={{ fontSize: 11, color: "var(--ink-dim)", marginTop: 10, letterSpacing: "0.16em" }}
+                  style={{
+                    fontSize: 11,
+                    color: "var(--ink-dim)",
+                    marginTop: 10,
+                    letterSpacing: "0.16em",
+                  }}
                 >
                   PULSA REANUDAR PARA CONTINUAR
                 </div>
@@ -110,7 +149,9 @@ export default function GamePlayerPage({
               <div className="input-row">
                 <input
                   value={name}
-                  onChange={(e) => setName(e.target.value.toUpperCase().slice(0, 10))}
+                  onChange={(e) =>
+                    setName(e.target.value.toUpperCase().slice(0, 10))
+                  }
                   placeholder="TUS INICIALES"
                 />
                 <button className="btn yellow" onClick={() => setSaved(true)}>
@@ -121,8 +162,12 @@ export default function GamePlayerPage({
               <div className="toast-saved">▸ PUNTUACIÓN GUARDADA_</div>
             )}
             <div className="actions">
-              <button className="btn" onClick={restart}>JUGAR DE NUEVO</button>
-              <Link href="/" className="btn magenta">VOLVER AL VAULT</Link>
+              <button className="btn" onClick={restart}>
+                JUGAR DE NUEVO
+              </button>
+              <Link href="/" className="btn magenta">
+                VOLVER AL VAULT
+              </Link>
             </div>
           </div>
         </div>
