@@ -1,18 +1,31 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GameCard } from "@/components/GameCard";
-import { GAMES, CATS } from "@/app/data/games";
+import { createClient } from "@/lib/supabase/client";
+import { getGames } from "@/lib/supabase/games";
+import { CATS, type Game } from "@/lib/supabase/types";
 
 export default function Biblioteca() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<(typeof CATS)[number]>("TODOS");
+  const [games, setGames] = useState<Game[]>([]);
+  const [loadingGames, setLoadingGames] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient();
+    getGames(supabase)
+      .then(setGames)
+      .finally(() => setLoadingGames(false));
+  }, []);
 
   const filtered = useMemo(() => {
-    return GAMES.filter(
-      (g) => (cat === "TODOS" || g.cat === cat) && g.title.toLowerCase().includes(q.toLowerCase())
+    return games.filter(
+      (g) =>
+        (cat === "TODOS" || g.cat === cat) &&
+        g.title.toLowerCase().includes(q.toLowerCase()),
     );
-  }, [q, cat]);
+  }, [games, q, cat]);
 
   return (
     <div className="fade-in">
@@ -46,18 +59,46 @@ export default function Biblioteca() {
       </div>
 
       <div className="av-grid">
-        {filtered.map((g) => (
-          <GameCard key={g.id} game={g} />
-        ))}
-        {filtered.length === 0 && (
+        {loadingGames ? (
           <div
-            style={{ gridColumn: "1 / -1", textAlign: "center", padding: 80, color: "var(--ink-faint)" }}
+            className="mono"
+            style={{
+              gridColumn: "1 / -1",
+              textAlign: "center",
+              padding: 80,
+              color: "var(--ink-dim)",
+            }}
           >
-            <div className="pixel" style={{ fontSize: 14, color: "var(--magenta)", marginBottom: 12 }}>
-              NO HAY RESULTADOS
-            </div>
-            <div>Intenta otra búsqueda o categoría.</div>
+            CARGANDO JUEGOS…
           </div>
+        ) : (
+          <>
+            {filtered.map((g) => (
+              <GameCard key={g.id} game={g} />
+            ))}
+            {filtered.length === 0 && (
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  textAlign: "center",
+                  padding: 80,
+                  color: "var(--ink-faint)",
+                }}
+              >
+                <div
+                  className="pixel"
+                  style={{
+                    fontSize: 14,
+                    color: "var(--magenta)",
+                    marginBottom: 12,
+                  }}
+                >
+                  NO HAY RESULTADOS
+                </div>
+                <div>Intenta otra búsqueda o categoría.</div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
