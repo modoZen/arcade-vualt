@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GAMES } from "@/app/data/games";
+import { createClient } from "@/lib/supabase/client";
+import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
 import AsteroidsGame from "@/components/games/AsteroidsGame";
 
-const game = GAMES.find((g) => g.id === "asteroides")!;
+const GAME_ID = "asteroides";
+const GAME_TITLE = "ASTEROIDES";
+const LAST_PLAYER_NAME_KEY = "av_last_player_name";
 
 export default function AsteroidsPlayerPage() {
   const { user } = useAuth();
@@ -17,8 +20,12 @@ export default function AsteroidsPlayerPage() {
   const [over, setOver] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
   const [runId, setRunId] = useState(0);
-  const [name, setName] = useState(user ?? "INVITADO");
+  const [name, setName] = useState(() => {
+    if (typeof window === "undefined") return user ?? "INVITADO";
+    return localStorage.getItem(LAST_PLAYER_NAME_KEY) ?? user ?? "INVITADO";
+  });
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const endGame = () => {
     setFinalScore(score);
@@ -33,6 +40,19 @@ export default function AsteroidsPlayerPage() {
     setSaved(false);
     setPaused(false);
     setRunId((id) => id + 1);
+  };
+
+  const saveScore = async () => {
+    setSaving(true);
+    const supabase = createClient();
+    await insertScore(supabase, {
+      gameId: GAME_ID,
+      playerName: name,
+      score: finalScore,
+    });
+    localStorage.setItem(LAST_PLAYER_NAME_KEY, name);
+    setSaving(false);
+    setSaved(true);
   };
 
   return (
@@ -65,7 +85,7 @@ export default function AsteroidsPlayerPage() {
           <button className="btn magenta" onClick={endGame}>
             FIN
           </button>
-          <Link href={`/juego/${game.id}`} className="btn ghost">
+          <Link href={`/juego/${GAME_ID}`} className="btn ghost">
             SALIR
           </Link>
         </div>
@@ -110,7 +130,7 @@ export default function AsteroidsPlayerPage() {
         </div>
         <div className="crt-bottom">
           <span className="led">SEÑAL OK</span>
-          <span>{game.title} · CRT-83 · 60 HZ</span>
+          <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
       </div>
@@ -130,8 +150,12 @@ export default function AsteroidsPlayerPage() {
                   }
                   placeholder="TUS INICIALES"
                 />
-                <button className="btn yellow" onClick={() => setSaved(true)}>
-                  GUARDAR PUNTUACIÓN
+                <button
+                  className="btn yellow"
+                  onClick={saveScore}
+                  disabled={saving}
+                >
+                  {saving ? "GUARDANDO…" : "GUARDAR PUNTUACIÓN"}
                 </button>
               </div>
             ) : (

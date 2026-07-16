@@ -2,7 +2,7 @@
 
 import { useRef, type MouseEvent } from "react";
 import Link from "next/link";
-import type { Game } from "@/app/data/games";
+import type { Game } from "@/lib/supabase/types";
 
 export function GameCard({ game }: { game: Game }) {
   const tiltRef = useRef<HTMLAnchorElement>(null);
@@ -40,12 +40,18 @@ export function GameCard({ game }: { game: Game }) {
         <div className="row">
           <div className="score-badge">
             <span>MEJOR PUNTUACIÓN</span>
-            <b>{game.best.toLocaleString("es-ES")}</b>
+            <b>
+              {game.best === null ? "—" : game.best.toLocaleString("es-ES")}
+            </b>
           </div>
           <span
             className={
               "btn " +
-              (game.color === "magenta" ? "magenta" : game.color === "yellow" ? "yellow" : "")
+              (game.color === "magenta"
+                ? "magenta"
+                : game.color === "yellow"
+                  ? "yellow"
+                  : "")
             }
           >
             JUGAR
