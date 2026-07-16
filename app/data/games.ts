@@ -99,6 +99,17 @@ export const GAMES: Game[] = [
     best: 24,
     plays: "4.2K",
   },
+  {
+    id: "asteroides",
+    title: "ASTEROIDES",
+    short: "Pulveriza rocas espaciales en gravedad cero.",
+    long: "Nave en un campo de asteroides toroidal. Destruye rocas para sumar puntos: las grandes se parten en medianas, las medianas en pequeñas. Sobrevive con 3 vidas e invencibilidad temporal al reaparecer.",
+    cat: "SHOOTER",
+    cover: "cover-asteroides",
+    color: "cyan",
+    best: 0,
+    plays: "0",
+  },
 ];
 
 export const CATS = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"] as const;
