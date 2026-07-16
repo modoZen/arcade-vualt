@@ -1,6 +1,6 @@
 # SPEC 05 — Juego real de Asteroides
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 01 (rutas base, `GAMES`, pantalla Detalle `/juego/[id]`, patrón visual del Reproductor — HUD, modal de fin de partida, CRT)
 > **Date:** 2026-07-15
 > **Objective:** Agregar el juego real de Asteroids (adaptado desde `references/started-games/02-asteroids/game.js`) como una nueva entrada `asteroides` en el catálogo, con su propio Reproductor en la ruta estática `/juego/asteroides/jugar` (que Next.js resuelve por precedencia sobre `/juego/[id]/jugar`), sincronizando el motor del juego con el HUD y los controles (pausa/fin/reinicio) existentes.
