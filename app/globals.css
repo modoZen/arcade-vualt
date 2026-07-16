@@ -1061,6 +1061,10 @@ a {
     0 30px 80px -20px rgba(0, 245, 255, 0.35);
   overflow: hidden;
 }
+.crt-fixed {
+  max-width: 848px;
+  margin: 0 auto;
+}
 .crt::before {
   content: "";
   position: absolute;

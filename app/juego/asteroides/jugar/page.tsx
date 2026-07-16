@@ -91,7 +91,7 @@ export default function AsteroidsPlayerPage() {
         </div>
       </div>
 
-      <div className="crt">
+      <div className="crt crt-fixed">
         <div className="crt-screen">
           <AsteroidsGame
             key={runId}
