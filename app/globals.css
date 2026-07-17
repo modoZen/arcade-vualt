@@ -832,6 +832,44 @@ a {
   text-shadow: 0 0 8px var(--cyan);
 }
 
+.cover-tetris {
+  background: radial-gradient(circle at 50% 50%, #2a2400, #0a0a18);
+}
+.cover-tetris::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--yellow), var(--yellow)) 30% 20% / 14% 14% no-repeat,
+    linear-gradient(var(--yellow), var(--yellow)) 44% 20% / 14% 14% no-repeat,
+    linear-gradient(var(--yellow), var(--yellow)) 44% 34% / 14% 14% no-repeat,
+    linear-gradient(var(--yellow), var(--yellow)) 58% 34% / 14% 14% no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) 22% 62% / 14% 14% no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) 22% 76% / 14% 14% no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) 36% 76% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 62% 62% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 76% 62% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 62% 76% / 14% 14% no-repeat;
+  filter: drop-shadow(0 0 8px rgba(245, 255, 0, 0.5));
+  image-rendering: pixelated;
+}
+.cover-tetris::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(245, 255, 0, 0.08) 0 40px,
+      transparent 40px 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 255, 0, 0.08) 0 40px,
+      transparent 40px 80px
+    );
+}
+
 .cover-rana {
   background: linear-gradient(180deg, #001f2a, #0a0a18);
 }
