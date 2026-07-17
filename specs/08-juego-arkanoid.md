@@ -1,6 +1,6 @@
 # SPEC 08 — Juego real de Arkanoid
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05 (juego real de Asteroides, motor de referencia), SPEC 06 (catálogo y leaderboard reales en Supabase)
 > **Date:** 2026-07-17
 > **Objective:** Agregar el juego real de Arkanoid (portado desde `references/started-games/04-arkanoid/game.js`) como una nueva entrada `arkanoid` en el catálogo, con su propio Reproductor dedicado en `/juego/arkanoid/jugar`, sincronizando el motor (paleta, pelota, bloques, 5 niveles, spritesheet) con el HUD, el leaderboard y los controles existentes.
@@ -127,29 +127,29 @@ const [saving, setSaving] = useState(false);
 
 ## Acceptance criteria
 
-- [ ] `games` en Supabase contiene una fila con `id: "arkanoid"` (`title: "ARKANOID"`, `cat: "ARCADE"`, `cover: "cover-arkanoid"`, `color: "green"`); las filas `asteroides`/`tetris` no cambiaron.
-- [ ] `public/games/arkanoid/` contiene `spritesheet-breakout.png`, `sounds/ball-bounce.mp3` y `sounds/break-sound.mp3`.
-- [ ] `app/globals.css` define `.cover-arkanoid` y la card de "arkanoid" en Biblioteca/Home muestra ese cover (distinto del de asteroides/tetris).
-- [ ] `/juego/arkanoid` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/arkanoid/jugar`.
-- [ ] `/juego/arkanoid/jugar` resuelve la ruta estática dedicada `app/juego/arkanoid/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
-- [ ] En `/juego/arkanoid/jugar` se ve un `<canvas>` con el juego real corriendo (paleta, pelota, bloques con sprites) en vez de divs decorativos.
-- [ ] `←`/`→` mueven la paleta sin scrollear la página; mover el mouse sobre el canvas también mueve la paleta.
-- [ ] Los bloques se destruyen al ser golpeados por la pelota, con animación de explosión de 4 frames y sonido de rotura; la pelota rebota en paredes/paleta con su sonido correspondiente.
-- [ ] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego.
-- [ ] El canvas ya no dibuja su propio overlay DOM/canvas de PAUSA/GAME OVER/WIN; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
-- [ ] La tecla `P`/`Escape` ya no pausa el juego internamente — la pausa depende exclusivamente del botón PAUSA/REANUDAR de React.
-- [ ] Ya no es posible saltar de nivel haciendo click sobre el canvas en pausa.
-- [ ] El botón "PAUSA" congela paleta/pelota/bloques (incluso moviendo el mouse, no siguen behind el overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
-- [ ] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
-- [ ] Perder la tercera vida (pelota cae fuera de la paleta) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
-- [ ] Completar el nivel 5 (destruir todos sus bloques) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto.
-- [ ] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "arkanoid"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
-- [ ] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (nivel 1, 3 vidas, puntaje 0, bloques del nivel 1 completos) y cierra el modal.
-- [ ] "SALIR" navega a `/juego/arkanoid` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
-- [ ] Tras guardar el primer puntaje, `arkanoid` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "ARKANOID"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
-- [ ] `/juego/asteroides`, `/juego/tetris` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] `games` en Supabase contiene una fila con `id: "arkanoid"` (`title: "ARKANOID"`, `cat: "ARCADE"`, `cover: "cover-arkanoid"`, `color: "green"`); las filas `asteroides`/`tetris` no cambiaron.
+- [x] `public/games/arkanoid/` contiene `spritesheet-breakout.png`, `sounds/ball-bounce.mp3` y `sounds/break-sound.mp3`.
+- [x] `app/globals.css` define `.cover-arkanoid` y la card de "arkanoid" en Biblioteca/Home muestra ese cover (distinto del de asteroides/tetris).
+- [x] `/juego/arkanoid` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/arkanoid/jugar`.
+- [x] `/juego/arkanoid/jugar` resuelve la ruta estática dedicada `app/juego/arkanoid/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
+- [x] En `/juego/arkanoid/jugar` se ve un `<canvas>` con el juego real corriendo (paleta, pelota, bloques con sprites) en vez de divs decorativos.
+- [x] `←`/`→` mueven la paleta sin scrollear la página; mover el mouse sobre el canvas también mueve la paleta.
+- [x] Los bloques se destruyen al ser golpeados por la pelota, con animación de explosión de 4 frames y sonido de rotura; la pelota rebota en paredes/paleta con su sonido correspondiente.
+- [x] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego.
+- [x] El canvas ya no dibuja su propio overlay DOM/canvas de PAUSA/GAME OVER/WIN; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
+- [x] La tecla `P`/`Escape` ya no pausa el juego internamente — la pausa depende exclusivamente del botón PAUSA/REANUDAR de React.
+- [x] Ya no es posible saltar de nivel haciendo click sobre el canvas en pausa.
+- [x] El botón "PAUSA" congela paleta/pelota/bloques (incluso moviendo el mouse, no siguen behind el overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
+- [x] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
+- [x] Perder la tercera vida (pelota cae fuera de la paleta) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
+- [x] Completar el nivel 5 (destruir todos sus bloques) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto.
+- [x] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "arkanoid"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
+- [x] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (nivel 1, 3 vidas, puntaje 0, bloques del nivel 1 completos) y cierra el modal.
+- [x] "SALIR" navega a `/juego/arkanoid` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
+- [x] Tras guardar el primer puntaje, `arkanoid` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "ARKANOID"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
+- [x] `/juego/asteroides`, `/juego/tetris` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
