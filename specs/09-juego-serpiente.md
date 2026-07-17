@@ -1,6 +1,6 @@
 # SPEC 09 — Juego real de Serpiente
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 05 (juego real de Asteroides, motor de referencia), SPEC 06 (catálogo y leaderboard reales en Supabase)
 > **Date:** 2026-07-17
 > **Objective:** Agregar el juego real de Serpiente (motor creado desde cero, sin `game.js` de referencia, usando el spritesheet de frutas de `references/source-assets/snake-assets/`) como una nueva entrada `serpiente` en el catálogo, con su propio Reproductor dedicado en `/juego/serpiente/jugar`, sincronizando el motor (movimiento por grilla, frutas aleatorias, aceleración por nivel) con el HUD, el leaderboard y los controles existentes.
