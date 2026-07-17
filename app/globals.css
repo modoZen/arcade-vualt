@@ -870,6 +870,35 @@ a {
     );
 }
 
+.cover-arkanoid {
+  background: radial-gradient(circle at 50% 25%, #002a10, #0a0a18);
+}
+.cover-arkanoid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 78%, var(--ink) 0 6px, transparent 7px),
+    repeating-linear-gradient(90deg, var(--yellow) 0 14%, transparent 14% 16%)
+      8% 22% / 84% 14px no-repeat,
+    repeating-linear-gradient(90deg, var(--magenta) 0 14%, transparent 14% 16%)
+      8% 38% / 84% 14px no-repeat,
+    repeating-linear-gradient(90deg, var(--cyan) 0 14%, transparent 14% 16%) 8%
+      54% / 84% 14px no-repeat;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 136, 0.35));
+}
+.cover-arkanoid::before {
+  content: "";
+  position: absolute;
+  left: 38%;
+  bottom: 16%;
+  width: 24%;
+  height: 8px;
+  background: var(--green);
+  border-radius: 4px;
+  box-shadow: 0 0 8px var(--green);
+}
+
 .cover-rana {
   background: linear-gradient(180deg, #001f2a, #0a0a18);
 }
