@@ -1,6 +1,6 @@
 # SPEC 08 — Juego real de Arkanoid
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 05 (juego real de Asteroides, motor de referencia), SPEC 06 (catálogo y leaderboard reales en Supabase)
 > **Date:** 2026-07-17
 > **Objective:** Agregar el juego real de Arkanoid (portado desde `references/started-games/04-arkanoid/game.js`) como una nueva entrada `arkanoid` en el catálogo, con su propio Reproductor dedicado en `/juego/arkanoid/jugar`, sincronizando el motor (paleta, pelota, bloques, 5 niveles, spritesheet) con el HUD, el leaderboard y los controles existentes.
