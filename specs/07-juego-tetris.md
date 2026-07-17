@@ -1,6 +1,6 @@
 # SPEC 07 — Juego real de Tetris
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05 (juego real de Asteroides, motor de referencia), SPEC 06 (catálogo y leaderboard reales en Supabase)
 > **Date:** 2026-07-17
 > **Objective:** Agregar el juego real de Tetris (adaptado desde `references/started-games/03-tetris/game.js`) como una nueva entrada `tetris` en el catálogo, con su propio Reproductor dedicado en `/juego/tetris/jugar`, sincronizando el motor con el HUD, el leaderboard y los controles existentes.
@@ -116,26 +116,26 @@ const [saving, setSaving] = useState(false);
 
 ## Acceptance criteria
 
-- [ ] `games` en Supabase contiene una fila con `id: "tetris"` (`title: "TETRIS"`, `cat: "PUZZLE"`, `cover: "cover-tetris"`, `color: "yellow"`); la fila `asteroides` no cambió.
-- [ ] `app/globals.css` define `.cover-tetris` y la card de "tetris" en Biblioteca/Home muestra ese cover (distinto del de asteroides).
-- [ ] `/juego/tetris` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/tetris/jugar`.
-- [ ] `/juego/tetris/jugar` resuelve la ruta estática dedicada `app/juego/tetris/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
-- [ ] En `/juego/tetris/jugar` se ve un `<canvas>` con el juego real corriendo (tablero, pieza cayendo, preview de siguiente pieza) en vez de divs decorativos.
-- [ ] Las flechas mueven/rotan/bajan la pieza (`←`/`→` mover, `↑` o `X` rotar, `↓` soft drop), `Espacio` hace hard drop, y ninguna de estas teclas scrollea la página.
-- [ ] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego.
-- [ ] El HUD interno del canvas (score/líneas/nivel, preview de siguiente pieza) se sigue dibujando dentro del canvas, sin duplicar el overlay de game over.
-- [ ] El canvas ya no dibuja su propio overlay DOM de PAUSA/GAME OVER; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
-- [ ] La tecla `P` ya no pausa el juego internamente — la pausa depende exclusivamente del botón PAUSA/REANUDAR de React.
-- [ ] El botón "PAUSA" congela el tablero/pieza (no siguen cayendo detrás del overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
-- [ ] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
-- [ ] Que una pieza nueva no quepa al aparecer (`spawn()` colisiona) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
-- [ ] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "tetris"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
-- [ ] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (tablero vacío, pieza centrada, nivel 1, puntaje 0) y cierra el modal.
-- [ ] "SALIR" navega a `/juego/tetris` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
-- [ ] Tras guardar el primer puntaje, `tetris` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "TETRIS"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
-- [ ] `/juego/asteroides` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] `games` en Supabase contiene una fila con `id: "tetris"` (`title: "TETRIS"`, `cat: "PUZZLE"`, `cover: "cover-tetris"`, `color: "yellow"`); la fila `asteroides` no cambió.
+- [x] `app/globals.css` define `.cover-tetris` y la card de "tetris" en Biblioteca/Home muestra ese cover (distinto del de asteroides).
+- [x] `/juego/tetris` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/tetris/jugar`.
+- [x] `/juego/tetris/jugar` resuelve la ruta estática dedicada `app/juego/tetris/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
+- [x] En `/juego/tetris/jugar` se ve un `<canvas>` con el juego real corriendo (tablero, pieza cayendo, preview de siguiente pieza) en vez de divs decorativos.
+- [x] Las flechas mueven/rotan/bajan la pieza (`←`/`→` mover, `↑` o `X` rotar, `↓` soft drop), `Espacio` hace hard drop, y ninguna de estas teclas scrollea la página.
+- [x] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego.
+- [x] El HUD interno del canvas (score/líneas/nivel, preview de siguiente pieza) se sigue dibujando dentro del canvas, sin duplicar el overlay de game over.
+- [x] El canvas ya no dibuja su propio overlay DOM de PAUSA/GAME OVER; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
+- [x] La tecla `P` ya no pausa el juego internamente — la pausa depende exclusivamente del botón PAUSA/REANUDAR de React.
+- [x] El botón "PAUSA" congela el tablero/pieza (no siguen cayendo detrás del overlay "EN PAUSA"); "REANUDAR" retoma exactamente donde quedó.
+- [x] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
+- [x] Que una pieza nueva no quepa al aparecer (`spawn()` colisiona) abre automáticamente el mismo modal de fin de partida, con el puntaje final correcto, sin necesidad de tocar "FIN".
+- [x] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "tetris"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
+- [x] "JUGAR DE NUEVO" reinicia una partida completamente nueva del motor real (tablero vacío, pieza centrada, nivel 1, puntaje 0) y cierra el modal.
+- [x] "SALIR" navega a `/juego/tetris` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
+- [x] Tras guardar el primer puntaje, `tetris` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "TETRIS"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
+- [x] `/juego/asteroides` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
