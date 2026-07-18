@@ -899,6 +899,43 @@ a {
   box-shadow: 0 0 8px var(--green);
 }
 
+.cover-serpiente {
+  background: radial-gradient(circle at 50% 50%, #2a001a, #0a0a18);
+}
+.cover-serpiente::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 0, 110, 0.08) 0 20px,
+      transparent 20px 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 0, 110, 0.08) 0 20px,
+      transparent 20px 40px
+    ),
+    linear-gradient(var(--magenta), var(--magenta)) 20% 40% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 34% 40% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 34% 54% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 48% 54% / 14% 14% no-repeat,
+    linear-gradient(var(--magenta), var(--magenta)) 48% 68% / 14% 14% no-repeat;
+  filter: drop-shadow(0 0 8px rgba(255, 0, 110, 0.5));
+}
+.cover-serpiente::before {
+  content: "";
+  position: absolute;
+  left: 62%;
+  top: 68%;
+  width: 14%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+}
+
 .cover-rana {
   background: linear-gradient(180deg, #001f2a, #0a0a18);
 }
