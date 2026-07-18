@@ -1,6 +1,6 @@
 # SPEC 09 — Juego real de Serpiente
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05 (juego real de Asteroides, motor de referencia), SPEC 06 (catálogo y leaderboard reales en Supabase)
 > **Date:** 2026-07-17
 > **Objective:** Agregar el juego real de Serpiente (motor creado desde cero, sin `game.js` de referencia, usando el spritesheet de frutas de `references/source-assets/snake-assets/`) como una nueva entrada `serpiente` en el catálogo, con su propio Reproductor dedicado en `/juego/serpiente/jugar`, sincronizando el motor (movimiento por grilla, frutas aleatorias, aceleración por nivel) con el HUD, el leaderboard y los controles existentes.
@@ -156,28 +156,28 @@ Fuente de la hoja: 3790×442px, fondo transparente. En cada spawn de fruta se el
 
 ## Acceptance criteria
 
-- [ ] `games` en Supabase contiene una fila con `id: "serpiente"` (`title: "SERPIENTE"`, `cat: "ARCADE"`, `cover: "cover-serpiente"`, `color: "magenta"`); las filas `asteroides`/`tetris`/`arkanoid` no cambiaron.
-- [ ] `public/games/serpiente/fruits.png` existe y se sirve correctamente.
-- [ ] `app/globals.css` define `.cover-serpiente` y la card de "serpiente" en Biblioteca/Home muestra ese cover (distinto del de asteroides/tetris/arkanoid).
-- [ ] `/juego/serpiente` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/serpiente/jugar`.
-- [ ] `/juego/serpiente/jugar` resuelve la ruta estática dedicada `app/juego/serpiente/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
-- [ ] En `/juego/serpiente/jugar` se ve un `<canvas>` con el juego real corriendo (serpiente sobre grilla, fruta con sprite) en vez de divs decorativos.
-- [ ] Flechas y WASD mueven la serpiente sin scrollear la página; no es posible invertir la dirección 180° sobre el propio cuello.
-- [ ] Comer una fruta hace crecer la serpiente un segmento, suma 100 puntos, y dibuja el sprite recortado del atlas sin artefactos visuales; la siguiente fruta aparece en una celda libre con un sprite elegido al azar.
-- [ ] Cada 5 frutas comidas el nivel sube (`onLevelChange`) y el intervalo de movimiento se reduce de forma perceptible.
-- [ ] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego; "Vidas" muestra `1` durante la partida y pasa a `0` en el choque final.
-- [ ] El canvas no dibuja ningún overlay propio de pausa/game over; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
-- [ ] El botón "PAUSA" congela el avance de la serpiente; "REANUDAR" retoma exactamente donde quedó.
-- [ ] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
-- [ ] Chocar contra el borde del canvas abre automáticamente el modal de fin de partida, con el puntaje final correcto.
-- [ ] Chocar contra el propio cuerpo abre automáticamente el modal de fin de partida, con el puntaje final correcto.
-- [ ] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "serpiente"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
-- [ ] "JUGAR DE NUEVO" reinicia una partida completamente nueva (serpiente de 3 segmentos centrada, quieta hasta la primera tecla, nivel 1, puntaje 0) y cierra el modal.
-- [ ] "SALIR" navega a `/juego/serpiente` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
-- [ ] Tras guardar el primer puntaje, `serpiente` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "SERPIENTE"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
-- [ ] `/juego/asteroides`, `/juego/tetris`, `/juego/arkanoid` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] `games` en Supabase contiene una fila con `id: "serpiente"` (`title: "SERPIENTE"`, `cat: "ARCADE"`, `cover: "cover-serpiente"`, `color: "magenta"`); las filas `asteroides`/`tetris`/`arkanoid` no cambiaron.
+- [x] `public/games/serpiente/fruits.png` existe y se sirve correctamente.
+- [x] `app/globals.css` define `.cover-serpiente` y la card de "serpiente" en Biblioteca/Home muestra ese cover (distinto del de asteroides/tetris/arkanoid).
+- [x] `/juego/serpiente` (Detalle) carga sin errores, muestra la info del juego, y el botón "JUGAR AHORA" navega a `/juego/serpiente/jugar`.
+- [x] `/juego/serpiente/jugar` resuelve la ruta estática dedicada `app/juego/serpiente/jugar/page.tsx` (no la genérica `app/juego/[id]/jugar/page.tsx`).
+- [x] En `/juego/serpiente/jugar` se ve un `<canvas>` con el juego real corriendo (serpiente sobre grilla, fruta con sprite) en vez de divs decorativos.
+- [x] Flechas y WASD mueven la serpiente sin scrollear la página; no es posible invertir la dirección 180° sobre el propio cuello.
+- [x] Comer una fruta hace crecer la serpiente un segmento, suma 100 puntos, y dibuja el sprite recortado del atlas sin artefactos visuales; la siguiente fruta aparece en una celda libre con un sprite elegido al azar.
+- [x] Cada 5 frutas comidas el nivel sube (`onLevelChange`) y el intervalo de movimiento se reduce de forma perceptible.
+- [x] El HUD superior de React (Puntuación, Vidas, Nivel) se actualiza en tiempo real reflejando el estado real del juego; "Vidas" muestra `1` durante la partida y pasa a `0` en el choque final.
+- [x] El canvas no dibuja ningún overlay propio de pausa/game over; esos estados se reflejan solo vía React (overlay de pausa + modal de fin).
+- [x] El botón "PAUSA" congela el avance de la serpiente; "REANUDAR" retoma exactamente donde quedó.
+- [x] El botón "FIN" abre el modal de fin de partida en cualquier momento, con el puntaje acumulado hasta ese instante.
+- [x] Chocar contra el borde del canvas abre automáticamente el modal de fin de partida, con el puntaje final correcto.
+- [x] Chocar contra el propio cuerpo abre automáticamente el modal de fin de partida, con el puntaje final correcto.
+- [x] "GUARDAR PUNTUACIÓN" en el modal inserta una fila real en `scores` (`game_id: "serpiente"`, `player_name`, `score`, `user_id: null`), verificable con `execute_sql`; el input "TUS INICIALES" se precarga desde `localStorage["av_last_player_name"]`.
+- [x] "JUGAR DE NUEVO" reinicia una partida completamente nueva (serpiente de 3 segmentos centrada, quieta hasta la primera tecla, nivel 1, puntaje 0) y cierra el modal.
+- [x] "SALIR" navega a `/juego/serpiente` y detiene el juego (sin errores de consola por listeners/`requestAnimationFrame` huérfanos tras desmontar).
+- [x] Tras guardar el primer puntaje, `serpiente` aparece automáticamente en el sidebar "MEJORES PUNTUACIONES" de Detalle y en `/salon` (vista global + nuevo tab "SERPIENTE"), sin ningún cambio de código en esas pantallas (heredado de SPEC 06).
+- [x] `/juego/asteroides`, `/juego/tetris`, `/juego/arkanoid` y el resto de la plataforma siguen funcionando sin ningún cambio de comportamiento.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
