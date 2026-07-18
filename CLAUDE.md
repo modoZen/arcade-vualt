@@ -11,6 +11,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Usa `/nuevo-juego <slug>` cuando se quiera agregar un juego jugable nuevo al catálogo: genera el spec combinando los patrones de SPEC 05 (motor en canvas) y SPEC 06 (catálogo/leaderboard en Supabase).
 - Los skills provienen del pack `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`, ver `skills-lock.json`).
 
+## Agentes
+
+- `game-planner` (`.claude/agents/game-planner.md`): decide qué juego nuevo conviene agregar al catálogo, evaluando diversidad de categorías, factibilidad con el stack actual (Canvas puro, sin assets pesados) y reconocimiento clásico, en ese orden de peso. Investiga `specs/`, `references/started-games`, `references/source-assets` y la tabla `games` de Supabase antes de proponer. Mantiene su historial de sugerencias en `references/game-suggestion-todo.md` (nunca lo reescribe, solo agrega filas) para no repetir ideas ya rechazadas. No escribe specs ni código — si el usuario elige un candidato, el siguiente paso es `/nuevo-juego <slug>`.
+
 ## Project
 
 Arcade Vault ("Es una plataforma para jugar online y competir por la mayor cantidad de puntos") — Next.js App Router + TypeScript + Tailwind CSS v4, con estética retro/CRT.
