@@ -1,6 +1,6 @@
 # SPEC 11 — Apariencia de gamepad neón para los controles táctiles
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 10 (controles táctiles) — reviste el `TouchControls` que ese spec creó
 > **Date:** 2026-07-19
 > **Objective:** Reemplazar la apariencia plana de `TouchControls` por el look del gamepad neón de `references/gamepad-assets/` (chasis con glow, D-pad en cruz con flechas SVG + hub con gema pulsante, botones circulares A/B), sin alterar su comportamiento (eventos de teclado sintéticos, `directionMode`, props) ni la garantía de caber sin scroll en portrait.
@@ -48,14 +48,14 @@ No hay cambios de datos ni cambios en las props de `TouchControls`: siguen siend
 
 ## Acceptance criteria
 
-- [ ] `TouchControls` se ve como `references/gamepad-assets/gamepad-neon.png`: chasis redondeado con glow, D-pad en cruz con flechas SVG y hub con gema pulsante, y botón(es) de acción circular(es) A/B.
-- [ ] Las props de `TouchControls` (`directionMode`, `actions`) y toda su lógica de eventos sintéticos permanecen sin cambios; los 4 componentes motores no se tocan.
-- [ ] El botón de acción muestra la letra `A` (magenta) para la primera acción y `B` (cyan) para la segunda; el texto original (p. ej. "DISPARAR") queda como `aria-label`.
-- [ ] Los 4 reproductores (Asteroides, Tetris, Arkanoid, Serpiente) muestran el gamepad restilizado en emulación táctil y siguen siendo jugables solo con él, idéntico comportamiento que antes del spec.
-- [ ] En portrait ~360–430px, HUD + canvas + gamepad caben sin scroll.
-- [ ] La gema del hub pulsa (animación `pulse-led`) y el estado presionado (`:active`) muestra el glow neón en D-pad y A/B.
-- [ ] En escritorio (sin `pointer: coarse`) `TouchControls` sigue sin renderizarse; teclado/mouse intactos.
-- [ ] `npm run lint` y `npm run build` terminan sin errores.
+- [x] `TouchControls` se ve como `references/gamepad-assets/gamepad-neon.png`: chasis redondeado con glow, D-pad en cruz con flechas SVG y hub con gema pulsante, y botón(es) de acción circular(es) A/B.
+- [x] Las props de `TouchControls` (`directionMode`, `actions`) y toda su lógica de eventos sintéticos permanecen sin cambios; los 4 componentes motores no se tocan.
+- [x] El botón de acción muestra la letra `A` (magenta) para la primera acción y `B` (cyan) para la segunda; el texto original (p. ej. "DISPARAR") queda como `aria-label`.
+- [x] Los 4 reproductores (Asteroides, Tetris, Arkanoid, Serpiente) muestran el gamepad restilizado en emulación táctil y siguen siendo jugables solo con él, idéntico comportamiento que antes del spec.
+- [x] En portrait ~360–430px, HUD + canvas + gamepad caben sin scroll.
+- [x] La gema del hub pulsa (animación `pulse-led`) y el estado presionado (`:active`) muestra el glow neón en D-pad y A/B.
+- [x] En escritorio (sin `pointer: coarse`) `TouchControls` sigue sin renderizarse; teclado/mouse intactos.
+- [x] `npm run lint` y `npm run build` terminan sin errores.
 
 ## Decisions
 
