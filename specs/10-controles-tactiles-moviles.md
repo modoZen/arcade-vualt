@@ -1,6 +1,6 @@
 # SPEC 10 — Controles táctiles para dispositivos móviles
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** SPEC 05 (Asteroides), SPEC 07 (Tetris), SPEC 08 (Arkanoid), SPEC 09 (Serpiente) — los 4 reproductores reales que este spec modifica
 > **Date:** 2026-07-19
 > **Objective:** Agregar un sistema de controles táctiles compartido (D-pad de 4 flechas + hasta 2 botones de acción, ocultando los que no aplican por juego) debajo del canvas de los 4 juegos reales del catálogo, mostrado automáticamente en dispositivos táctiles (detectados vía `pointer: coarse`) sin alterar el comportamiento de teclado/mouse en desktop, con layout ajustado para caber sin scroll en portrait y un aviso de "girá tu dispositivo" si se detecta landscape en un dispositivo táctil.
@@ -95,19 +95,19 @@ interface TouchControlsProps {
 
 ## Acceptance criteria
 
-- [ ] `components/games/TouchControls.tsx` existe, exporta el componente con props `directionMode`/`actions`, y no se renderiza en dispositivos sin `pointer: coarse`.
-- [ ] Ninguno de los 4 componentes de juego (`AsteroidsGame.tsx`, `TetrisGame.tsx`, `ArkanoidGame.tsx`, `SerpienteGame.tsx`) cambia sus props ni su lógica interna — siguen aceptando exactamente las mismas 5 props.
-- [ ] En emulación de dispositivo táctil portrait, `/juego/asteroides/jugar` muestra `TouchControls` debajo del `.crt`; el D-pad rota la nave (←/→) y la empuja (↑); el botón de acción dispara; el comportamiento es indistinguible del control por teclado.
-- [ ] En emulación táctil portrait, `/juego/tetris/jugar` muestra `TouchControls`; mantener presionado ←/→/↓ mueve/baja la pieza repetidamente (no un solo paso); ↑ rota; el botón de acción hace hard drop.
-- [ ] En emulación táctil portrait, `/juego/arkanoid/jugar` muestra `TouchControls` (sin botones de acción visibles); ←/→ mueven la paleta de forma continua mientras se mantiene presionado.
-- [ ] En emulación táctil portrait, `/juego/serpiente/jugar` muestra `TouchControls` (sin botones de acción visibles); cada tap de dirección mueve la serpiente sin permitir invertir 180° sobre el cuello.
-- [ ] En los 4 reproductores, HUD + canvas + `TouchControls` caben en la pantalla de un celular típico en portrait sin necesidad de scroll.
-- [ ] En emulación táctil landscape, cada uno de los 4 reproductores muestra el overlay "Girá tu dispositivo a vertical" (`.landscape-lock`) en vez del juego.
-- [ ] En un viewport de escritorio (sin `pointer: coarse`), `TouchControls` no se renderiza en ninguno de los 4 reproductores, y el teclado (y el mouse en Arkanoid) siguen funcionando exactamente igual que antes de este spec.
-- [ ] Soltar un botón mientras el dedo se desliza fuera de su área (`pointercancel`/`pointerleave`) libera el estado igual que soltarlo normalmente (no queda una dirección "trabada" presionada).
-- [ ] El resto de la plataforma (Home, Biblioteca, Detalle, Salón de la Fama) no cambia de comportamiento.
-- [ ] El chequeo de tipos de TypeScript no reporta errores.
-- [ ] `npm run build` (o `npm run dev`) termina sin errores de compilación.
+- [x] `components/games/TouchControls.tsx` existe, exporta el componente con props `directionMode`/`actions`, y no se renderiza en dispositivos sin `pointer: coarse`.
+- [x] Ninguno de los 4 componentes de juego (`AsteroidsGame.tsx`, `TetrisGame.tsx`, `ArkanoidGame.tsx`, `SerpienteGame.tsx`) cambia sus props ni su lógica interna — siguen aceptando exactamente las mismas 5 props.
+- [x] En emulación de dispositivo táctil portrait, `/juego/asteroides/jugar` muestra `TouchControls` debajo del `.crt`; el D-pad rota la nave (←/→) y la empuja (↑); el botón de acción dispara; el comportamiento es indistinguible del control por teclado.
+- [x] En emulación táctil portrait, `/juego/tetris/jugar` muestra `TouchControls`; mantener presionado ←/→/↓ mueve/baja la pieza repetidamente (no un solo paso); ↑ rota; el botón de acción hace hard drop.
+- [x] En emulación táctil portrait, `/juego/arkanoid/jugar` muestra `TouchControls` (sin botones de acción visibles); ←/→ mueven la paleta de forma continua mientras se mantiene presionado.
+- [x] En emulación táctil portrait, `/juego/serpiente/jugar` muestra `TouchControls` (sin botones de acción visibles); cada tap de dirección mueve la serpiente sin permitir invertir 180° sobre el cuello.
+- [x] En los 4 reproductores, HUD + canvas + `TouchControls` caben en la pantalla de un celular típico en portrait sin necesidad de scroll.
+- [x] En emulación táctil landscape, cada uno de los 4 reproductores muestra el overlay "Girá tu dispositivo a vertical" (`.landscape-lock`) en vez del juego.
+- [x] En un viewport de escritorio (sin `pointer: coarse`), `TouchControls` no se renderiza en ninguno de los 4 reproductores, y el teclado (y el mouse en Arkanoid) siguen funcionando exactamente igual que antes de este spec.
+- [x] Soltar un botón mientras el dedo se desliza fuera de su área (`pointercancel`/`pointerleave`) libera el estado igual que soltarlo normalmente (no queda una dirección "trabada" presionada).
+- [x] El resto de la plataforma (Home, Biblioteca, Detalle, Salón de la Fama) no cambia de comportamiento.
+- [x] El chequeo de tipos de TypeScript no reporta errores.
+- [x] `npm run build` (o `npm run dev`) termina sin errores de compilación.
 
 ## Decisions
 
