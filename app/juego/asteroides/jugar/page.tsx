@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
 import AsteroidsGame, { AsteroidsSkin } from "@/components/games/AsteroidsGame";
+import TouchControls from "@/components/games/TouchControls";
 
 const GAME_ID = "asteroides";
 const GAME_TITLE = "ASTEROIDES";
@@ -161,6 +162,15 @@ export default function AsteroidsPlayerPage() {
           <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+      </div>
+
+      <TouchControls
+        directionMode="hold"
+        actions={[{ code: "Space", label: "DISPARAR" }]}
+      />
+
+      <div className="landscape-lock">
+        <div className="pixel">GIRÁ TU DISPOSITIVO A VERTICAL</div>
       </div>
 
       {over && (
