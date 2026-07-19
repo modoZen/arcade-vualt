@@ -1123,6 +1123,11 @@ a {
   margin-bottom: 18px;
   flex-wrap: wrap;
 }
+.hud-stats-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
 .hud-stat {
   display: flex;
   flex-direction: column;
@@ -1373,12 +1378,15 @@ a {
 
 @media (max-width: 480px) {
   .av-player {
-    padding: 0 10px 24px;
+    padding: 0 10px 16px;
   }
   .player-hud {
-    padding: 10px 12px;
-    gap: 10px;
-    margin-bottom: 12px;
+    padding: 8px 10px;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .hud-stats-row {
+    gap: 8px;
   }
   .hud-stat .l {
     font-size: 8px;
@@ -1394,7 +1402,7 @@ a {
     font-size: 8px;
   }
   .crt {
-    padding: 10px;
+    padding: 8px;
     border-radius: 16px;
   }
   .crt-fixed {
@@ -1402,15 +1410,22 @@ a {
   }
   .crt-bottom {
     font-size: 6px;
-    margin-top: 8px;
+    margin-top: 6px;
+  }
+  .touch-controls {
+    margin-top: 10px;
   }
   .touch-dpad {
-    grid-template-columns: repeat(3, 48px);
-    grid-template-rows: repeat(3, 48px);
+    grid-template-columns: repeat(3, 44px);
+    grid-template-rows: repeat(3, 44px);
+    gap: 3px;
+  }
+  .touch-actions {
+    gap: 6px;
   }
   .touch-action-btn {
-    width: 64px;
-    height: 48px;
+    width: 60px;
+    height: 44px;
     font-size: 8px;
   }
 }
