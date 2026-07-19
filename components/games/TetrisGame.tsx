@@ -33,6 +33,61 @@ const COLORS: (string | null)[] = [
   "#9e9e9e", // N - tuerca (gris metálico)
 ];
 
+export type TetrisSkin = "retro" | "neon" | "pastel" | "pixel";
+
+interface SkinDef {
+  label: string;
+  colors: (string | null)[];
+  grid: string;
+  glow?: boolean;
+  flat?: boolean;
+}
+
+const SKINS: Record<TetrisSkin, SkinDef> = {
+  retro: {
+    label: "Retro",
+    colors: COLORS,
+    grid: GRID_LINE_COLOR,
+  },
+  neon: {
+    label: "Neon",
+    colors: [
+      null,
+      "#00e5ff",
+      "#fff176",
+      "#e040fb",
+      "#69f0ae",
+      "#ff5252",
+      "#448aff",
+      "#ffab40",
+      "#b388ff",
+    ],
+    grid: "rgba(0, 229, 255, 0.25)",
+    glow: true,
+  },
+  pastel: {
+    label: "Pastel",
+    colors: [
+      null,
+      "#a8dadc",
+      "#ffe8a3",
+      "#d8bfd8",
+      "#c1e1c1",
+      "#ffb3ba",
+      "#bcd4ff",
+      "#ffdab9",
+      "#e6e6e6",
+    ],
+    grid: "rgba(255, 255, 255, 0.1)",
+  },
+  pixel: {
+    label: "Pixel Art",
+    colors: COLORS,
+    grid: GRID_LINE_COLOR,
+    flat: true,
+  },
+};
+
 const PIECES: (number[][] | null)[] = [
   null,
   [
@@ -92,6 +147,7 @@ interface TetrisGameProps {
   onLivesChange: (lives: number) => void;
   onLevelChange: (level: number) => void;
   onGameOver: (finalScore: number) => void;
+  skin?: TetrisSkin;
 }
 
 export default function TetrisGame({
@@ -100,9 +156,11 @@ export default function TetrisGame({
   onLivesChange,
   onLevelChange,
   onGameOver,
+  skin = "retro",
 }: TetrisGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(paused);
+  const skinRef = useRef(skin);
   const callbacksRef = useRef({
     onScoreChange,
     onLivesChange,
@@ -113,6 +171,10 @@ export default function TetrisGame({
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
+
+  useEffect(() => {
+    skinRef.current = skin;
+  }, [skin]);
 
   useEffect(() => {
     callbacksRef.current = {
@@ -252,16 +314,29 @@ export default function TetrisGame({
       alpha?: number,
     ) {
       if (!colorIndex) return;
+      const def = SKINS[skinRef.current];
+      const color = def.colors[colorIndex] ?? (COLORS[colorIndex] as string);
       context.globalAlpha = alpha ?? 1;
-      context.fillStyle = COLORS[colorIndex] as string;
+      if (def.glow) {
+        context.shadowColor = color;
+        context.shadowBlur = 8;
+      }
+      context.fillStyle = color;
       context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-      context.fillStyle = "rgba(255,255,255,0.12)";
-      context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+      if (def.glow) context.shadowBlur = 0;
+      if (!def.flat) {
+        context.fillStyle = "rgba(255,255,255,0.12)";
+        context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+      } else {
+        context.strokeStyle = "rgba(0,0,0,0.5)";
+        context.lineWidth = 1;
+        context.strokeRect(x * size + 1.5, y * size + 1.5, size - 3, size - 3);
+      }
       context.globalAlpha = 1;
     }
 
     function drawGrid() {
-      ctx.strokeStyle = GRID_LINE_COLOR;
+      ctx.strokeStyle = SKINS[skinRef.current].grid;
       ctx.lineWidth = 0.5;
       for (let c = 1; c < COLS; c++) {
         ctx.beginPath();

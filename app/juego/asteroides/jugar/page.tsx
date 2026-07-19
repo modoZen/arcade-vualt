@@ -5,11 +5,17 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
-import AsteroidsGame from "@/components/games/AsteroidsGame";
+import AsteroidsGame, { AsteroidsSkin } from "@/components/games/AsteroidsGame";
 
 const GAME_ID = "asteroides";
 const GAME_TITLE = "ASTEROIDES";
 const LAST_PLAYER_NAME_KEY = "av_last_player_name";
+const SKIN_KEY = "av_asteroides_skin";
+const SKIN_OPTIONS: { value: AsteroidsSkin; label: string }[] = [
+  { value: "retro", label: "Retro" },
+  { value: "neon", label: "Neón" },
+  { value: "pastel", label: "Pastel" },
+];
 
 export default function AsteroidsPlayerPage() {
   const { user } = useAuth();
@@ -26,6 +32,15 @@ export default function AsteroidsPlayerPage() {
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skin, setSkin] = useState<AsteroidsSkin>(() => {
+    if (typeof window === "undefined") return "retro";
+    return (localStorage.getItem(SKIN_KEY) as AsteroidsSkin) ?? "retro";
+  });
+
+  const changeSkin = (value: AsteroidsSkin) => {
+    setSkin(value);
+    localStorage.setItem(SKIN_KEY, value);
+  };
 
   const endGame = () => {
     setFinalScore(score);
@@ -79,6 +94,18 @@ export default function AsteroidsPlayerPage() {
           </div>
         </div>
         <div className="hud-actions">
+          <select
+            className="skin-select"
+            value={skin}
+            onChange={(e) => changeSkin(e.target.value as AsteroidsSkin)}
+            aria-label="Skin de nave y asteroides"
+          >
+            {SKIN_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
@@ -96,6 +123,7 @@ export default function AsteroidsPlayerPage() {
           <AsteroidsGame
             key={runId}
             paused={paused}
+            skin={skin}
             onScoreChange={setScore}
             onLivesChange={setLives}
             onLevelChange={setLevel}

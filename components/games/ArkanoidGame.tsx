@@ -72,6 +72,39 @@ const EXPLOSION_FRAMES: Record<string, SpriteRect[]> = {
 
 const EXPLOSION_DURATION = 150;
 
+// Los bloques, la pala y la bola salen del spritesheet (SPRITES/EXPLOSION_FRAMES)
+// y no se retintan por skin: reskinearlos de verdad requeriría tint por canvas o
+// un spritesheet alterno, fuera de alcance acá. El skin solo cubre fondo + HUD.
+export type ArkanoidSkin = "retro" | "neon" | "pastel";
+
+interface SkinDef {
+  label: string;
+  bg: string;
+  hud: string;
+  hudAccent?: string;
+  glow?: boolean;
+}
+
+const SKINS: Record<ArkanoidSkin, SkinDef> = {
+  retro: {
+    label: "Retro",
+    bg: "#000000",
+    hud: "#ffffff",
+  },
+  neon: {
+    label: "Neón",
+    bg: "#04030a",
+    hud: "#00f5ff",
+    hudAccent: "#ff2fb0",
+    glow: true,
+  },
+  pastel: {
+    label: "Pastel",
+    bg: "#161320",
+    hud: "#e0d4ff",
+  },
+};
+
 const SPRITES: {
   paddle: SpriteRect;
   ball: SpriteRect;
@@ -256,6 +289,7 @@ interface ArkanoidGameProps {
   onLivesChange: (lives: number) => void;
   onLevelChange: (level: number) => void;
   onGameOver: (finalScore: number) => void;
+  skin?: ArkanoidSkin;
 }
 
 export default function ArkanoidGame({
@@ -264,9 +298,11 @@ export default function ArkanoidGame({
   onLivesChange,
   onLevelChange,
   onGameOver,
+  skin = "retro",
 }: ArkanoidGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(paused);
+  const skinRef = useRef(skin);
   const callbacksRef = useRef({
     onScoreChange,
     onLivesChange,
@@ -277,6 +313,10 @@ export default function ArkanoidGame({
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
+
+  useEffect(() => {
+    skinRef.current = skin;
+  }, [skin]);
 
   useEffect(() => {
     callbacksRef.current = {
@@ -457,7 +497,8 @@ export default function ArkanoidGame({
     }
 
     function draw() {
-      ctx.fillStyle = "#000";
+      const def = SKINS[skinRef.current];
+      ctx.fillStyle = def.bg;
       ctx.fillRect(0, 0, W, H);
 
       for (const block of blocks) {
@@ -491,13 +532,18 @@ export default function ArkanoidGame({
       drawSprite(ctx, "ball", ball.x, ball.y, ball.w, ball.h);
 
       if (gameState === "playing") {
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = def.hud;
+        if (def.glow) {
+          ctx.shadowColor = def.hudAccent ?? def.hud;
+          ctx.shadowBlur = 8;
+        }
         ctx.font = "bold 18px monospace";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
         ctx.fillText("Score: " + score, 10, 10);
         ctx.textAlign = "center";
         ctx.fillText("Nivel: " + currentLevel, W / 2, 10);
+        if (def.glow) ctx.shadowBlur = 0;
         const ballSize = 16;
         const ballSpacing = 4;
         for (let i = 0; i < lives; i++) {

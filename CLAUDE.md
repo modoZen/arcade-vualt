@@ -11,6 +11,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Usa `/nuevo-juego <slug>` cuando se quiera agregar un juego jugable nuevo al catálogo: genera el spec combinando los patrones de SPEC 05 (motor en canvas) y SPEC 06 (catálogo/leaderboard en Supabase).
 - Los skills provienen del pack `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`, ver `skills-lock.json`).
 
+## Agentes
+
+- `game-planner` (`.claude/agents/game-planner.md`): decide qué juego nuevo conviene agregar al catálogo, evaluando diversidad de categorías, factibilidad con el stack actual (Canvas puro, sin assets pesados) y reconocimiento clásico, en ese orden de peso. Investiga `specs/`, `references/started-games`, `references/source-assets` y la tabla `games` de Supabase antes de proponer. Mantiene su historial de sugerencias en `references/game-suggestion-todo.md` (nunca lo reescribe, solo agrega filas) para no repetir ideas ya rechazadas. No escribe specs ni código — si el usuario elige un candidato, el siguiente paso es `/nuevo-juego <slug>`.
+- `game-jam` (`.claude/agents/game-jam.md`): recibe **un juego** concreto (nombre/slug, opcionalmente con una carpeta de referencia bajo `references/`) y crea `specs/game-jam/<game-id>/` con 2 specs completos (`Status: Draft`) que documentan **enfoques de diseño alternativos** de ese mismo juego (distinta mecánica, controles, progresión o mapeo de HUD), listos para revisión — a diferencia de `/nuevo-juego`, trabaja de forma autónoma sin pausar a preguntar. Registra su propuesta en `references/game-suggestion-todo.md`. No implementa código ni aplica migraciones; elegir y promover un enfoque a spec numerado real es trabajo manual del usuario o de `/nuevo-juego`.
+- `skin-designer` (`.claude/agents/skin-designer.md`): recibe **un juego** concreto del catálogo, audita si ya tiene un selector de skins (paletas de color intercambiables desde el HUD, con persistencia en `localStorage`) y, si no lo tiene, se lo implementa calcando el patrón real de Tetris (`components/games/TetrisGame.tsx` + `app/juego/tetris/jugar/page.tsx`) — a diferencia de `game-planner`/`game-jam`, sí edita código real y no persiste ningún doc/TODO, solo reporta en el chat. Agrega el prop `skin` como desviación consciente de la regla de "exactamente 5 props".
+
 ## Project
 
 Arcade Vault ("Es una plataforma para jugar online y competir por la mayor cantidad de puntos") — Next.js App Router + TypeScript + Tailwind CSS v4, con estética retro/CRT.

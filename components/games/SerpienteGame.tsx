@@ -104,12 +104,63 @@ function intervalForLevel(level: number): number {
   return Math.max(MIN_INTERVAL, BASE_INTERVAL - (level - 1) * INTERVAL_STEP);
 }
 
+const HEAD_COLOR = "#00ff88";
+const BODY_COLOR = "#ff006e";
+const GRID_COLOR = "rgba(255, 0, 110, 0.08)";
+const BG_COLOR = "#0a0a12";
+
+export type SerpienteSkin = "retro" | "neon" | "pastel" | "pixel";
+
+interface SkinDef {
+  label: string;
+  head: string;
+  body: string;
+  grid: string;
+  bg: string;
+  glow?: boolean;
+  flat?: boolean;
+}
+
+const SKINS: Record<SerpienteSkin, SkinDef> = {
+  retro: {
+    label: "Retro",
+    head: HEAD_COLOR,
+    body: BODY_COLOR,
+    grid: GRID_COLOR,
+    bg: BG_COLOR,
+  },
+  neon: {
+    label: "Neón",
+    head: "#00ffe5",
+    body: "#ff2e9e",
+    grid: "rgba(0, 255, 229, 0.2)",
+    bg: "#050510",
+    glow: true,
+  },
+  pastel: {
+    label: "Pastel",
+    head: "#a8e6b0",
+    body: "#ffb3c6",
+    grid: "rgba(255, 255, 255, 0.08)",
+    bg: "#1a1a24",
+  },
+  pixel: {
+    label: "Pixel Art",
+    head: "#33ff33",
+    body: "#cc0044",
+    grid: "rgba(255, 255, 255, 0.15)",
+    bg: "#000000",
+    flat: true,
+  },
+};
+
 interface SerpienteGameProps {
   paused: boolean;
   onScoreChange: (score: number) => void;
   onLivesChange: (lives: number) => void;
   onLevelChange: (level: number) => void;
   onGameOver: (finalScore: number) => void;
+  skin?: SerpienteSkin;
 }
 
 export default function SerpienteGame({
@@ -118,9 +169,11 @@ export default function SerpienteGame({
   onLivesChange,
   onLevelChange,
   onGameOver,
+  skin = "retro",
 }: SerpienteGameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pausedRef = useRef(paused);
+  const skinRef = useRef(skin);
   const callbacksRef = useRef({
     onScoreChange,
     onLivesChange,
@@ -131,6 +184,10 @@ export default function SerpienteGame({
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
+
+  useEffect(() => {
+    skinRef.current = skin;
+  }, [skin]);
 
   useEffect(() => {
     callbacksRef.current = {
@@ -240,7 +297,8 @@ export default function SerpienteGame({
     window.addEventListener("keydown", handleKeyDown);
 
     function drawGrid() {
-      ctx.strokeStyle = "rgba(255, 0, 110, 0.08)";
+      const def = SKINS[skinRef.current];
+      ctx.strokeStyle = def.grid ?? GRID_COLOR;
       ctx.lineWidth = 1;
       for (let i = 1; i < GRID; i++) {
         ctx.beginPath();
@@ -255,9 +313,27 @@ export default function SerpienteGame({
     }
 
     function drawSnake() {
+      const def = SKINS[skinRef.current];
       segments.forEach((seg, i) => {
-        ctx.fillStyle = i === 0 ? "#00ff88" : "#ff006e";
+        const color =
+          i === 0 ? (def.head ?? HEAD_COLOR) : (def.body ?? BODY_COLOR);
+        ctx.fillStyle = color;
+        if (def.glow) {
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 8;
+        }
         ctx.fillRect(seg.x * CELL + 1, seg.y * CELL + 1, CELL - 2, CELL - 2);
+        if (def.glow) ctx.shadowBlur = 0;
+        if (def.flat) {
+          ctx.strokeStyle = "rgba(0,0,0,0.6)";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(
+            seg.x * CELL + 1.5,
+            seg.y * CELL + 1.5,
+            CELL - 3,
+            CELL - 3,
+          );
+        }
       });
     }
 
@@ -276,7 +352,7 @@ export default function SerpienteGame({
     }
 
     function draw() {
-      ctx.fillStyle = "#0a0a12";
+      ctx.fillStyle = SKINS[skinRef.current].bg ?? BG_COLOR;
       ctx.fillRect(0, 0, W, H);
       drawGrid();
       drawFood();

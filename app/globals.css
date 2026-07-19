@@ -1153,6 +1153,24 @@ a {
   display: flex;
   gap: 10px;
 }
+.skin-select {
+  height: 38px;
+  padding: 0 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.skin-select:hover {
+  border-color: var(--ink-dim);
+}
+.skin-select:focus {
+  outline: 0;
+  border-color: var(--cyan);
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.35);
+}
 
 .crt {
   position: relative;

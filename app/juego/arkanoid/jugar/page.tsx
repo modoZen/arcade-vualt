@@ -5,11 +5,17 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
-import ArkanoidGame from "@/components/games/ArkanoidGame";
+import ArkanoidGame, { ArkanoidSkin } from "@/components/games/ArkanoidGame";
 
 const GAME_ID = "arkanoid";
 const GAME_TITLE = "ARKANOID";
 const LAST_PLAYER_NAME_KEY = "av_last_player_name";
+const SKIN_KEY = "av_arkanoid_skin";
+const SKIN_OPTIONS: { value: ArkanoidSkin; label: string }[] = [
+  { value: "retro", label: "Retro" },
+  { value: "neon", label: "Neón" },
+  { value: "pastel", label: "Pastel" },
+];
 
 export default function ArkanoidPlayerPage() {
   const { user } = useAuth();
@@ -26,6 +32,15 @@ export default function ArkanoidPlayerPage() {
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skin, setSkin] = useState<ArkanoidSkin>(() => {
+    if (typeof window === "undefined") return "retro";
+    return (localStorage.getItem(SKIN_KEY) as ArkanoidSkin) ?? "retro";
+  });
+
+  const changeSkin = (value: ArkanoidSkin) => {
+    setSkin(value);
+    localStorage.setItem(SKIN_KEY, value);
+  };
 
   const endGame = () => {
     setFinalScore(score);
@@ -79,6 +94,18 @@ export default function ArkanoidPlayerPage() {
           </div>
         </div>
         <div className="hud-actions">
+          <select
+            className="skin-select"
+            value={skin}
+            onChange={(e) => changeSkin(e.target.value as ArkanoidSkin)}
+            aria-label="Skin de fondo y HUD"
+          >
+            {SKIN_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
@@ -96,6 +123,7 @@ export default function ArkanoidPlayerPage() {
           <ArkanoidGame
             key={runId}
             paused={paused}
+            skin={skin}
             onScoreChange={setScore}
             onLivesChange={setLives}
             onLevelChange={setLevel}
