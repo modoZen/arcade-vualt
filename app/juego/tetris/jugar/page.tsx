@@ -5,11 +5,18 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
-import TetrisGame from "@/components/games/TetrisGame";
+import TetrisGame, { TetrisSkin } from "@/components/games/TetrisGame";
 
 const GAME_ID = "tetris";
 const GAME_TITLE = "TETRIS";
 const LAST_PLAYER_NAME_KEY = "av_last_player_name";
+const SKIN_KEY = "av_tetris_skin";
+const SKIN_OPTIONS: { value: TetrisSkin; label: string }[] = [
+  { value: "retro", label: "Retro" },
+  { value: "neon", label: "Neón" },
+  { value: "pastel", label: "Pastel" },
+  { value: "pixel", label: "Pixel Art" },
+];
 
 export default function TetrisPlayerPage() {
   const { user } = useAuth();
@@ -26,6 +33,15 @@ export default function TetrisPlayerPage() {
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skin, setSkin] = useState<TetrisSkin>(() => {
+    if (typeof window === "undefined") return "retro";
+    return (localStorage.getItem(SKIN_KEY) as TetrisSkin) ?? "retro";
+  });
+
+  const changeSkin = (value: TetrisSkin) => {
+    setSkin(value);
+    localStorage.setItem(SKIN_KEY, value);
+  };
 
   const endGame = () => {
     setFinalScore(score);
@@ -79,6 +95,18 @@ export default function TetrisPlayerPage() {
           </div>
         </div>
         <div className="hud-actions">
+          <select
+            className="skin-select"
+            value={skin}
+            onChange={(e) => changeSkin(e.target.value as TetrisSkin)}
+            aria-label="Skin de piezas"
+          >
+            {SKIN_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
@@ -96,6 +124,7 @@ export default function TetrisPlayerPage() {
           <TetrisGame
             key={runId}
             paused={paused}
+            skin={skin}
             onScoreChange={setScore}
             onLivesChange={setLives}
             onLevelChange={setLevel}
