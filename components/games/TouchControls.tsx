@@ -40,14 +40,21 @@ function dispatchKey(type: "keydown" | "keyup", code: string) {
   window.dispatchEvent(new KeyboardEvent(type, { code }));
 }
 
+const DPAD_ARROW_PATHS: Record<string, string> = {
+  up: "M12 4 L20 16 L4 16 Z",
+  right: "M8 4 L20 12 L8 20 Z",
+  down: "M4 8 L20 8 L12 20 Z",
+  left: "M16 4 L16 20 L4 12 Z",
+};
+
 interface DirButtonProps {
   code: string;
   label: string;
   mode: DirectionMode;
-  className: string;
+  direction: "up" | "down" | "left" | "right";
 }
 
-function DirButton({ code, label, mode, className }: DirButtonProps) {
+function DirButton({ code, label, mode, direction }: DirButtonProps) {
   const repeatTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const repeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const activeRef = useRef(false);
@@ -102,7 +109,7 @@ function DirButton({ code, label, mode, className }: DirButtonProps) {
   return (
     <button
       type="button"
-      className={className}
+      className={`touch-dpad-btn ${direction}`}
       aria-label={label}
       style={{ touchAction: "none" }}
       onPointerDown={(e) => {
@@ -113,16 +120,22 @@ function DirButton({ code, label, mode, className }: DirButtonProps) {
       onPointerCancel={release}
       onPointerLeave={release}
     >
-      {label}
+      <svg className="touch-dpad-arrow" viewBox="0 0 24 24">
+        <path d={DPAD_ARROW_PATHS[direction]} fill="currentColor" />
+      </svg>
     </button>
   );
 }
 
-function ActionButton({ code, label }: TouchActionConfig) {
+interface ActionButtonProps extends TouchActionConfig {
+  letter: "A" | "B";
+}
+
+function ActionButton({ code, label, letter }: ActionButtonProps) {
   return (
     <button
       type="button"
-      className="touch-action-btn"
+      className={`touch-action-btn ${letter.toLowerCase()}`}
       aria-label={label}
       style={{ touchAction: "none" }}
       onPointerDown={(e) => {
@@ -131,7 +144,8 @@ function ActionButton({ code, label }: TouchActionConfig) {
         dispatchKey("keyup", code);
       }}
     >
-      {label}
+      <span className="touch-action-ring" />
+      <span className="touch-action-letter">{letter}</span>
     </button>
   );
 }
@@ -145,39 +159,48 @@ export default function TouchControls({
 
   return (
     <div className="touch-controls">
-      <div className="touch-dpad">
-        <DirButton
-          code="ArrowUp"
-          label="▲"
-          mode={directionMode}
-          className="touch-dpad-btn up"
-        />
-        <DirButton
-          code="ArrowLeft"
-          label="◀"
-          mode={directionMode}
-          className="touch-dpad-btn left"
-        />
-        <DirButton
-          code="ArrowRight"
-          label="▶"
-          mode={directionMode}
-          className="touch-dpad-btn right"
-        />
-        <DirButton
-          code="ArrowDown"
-          label="▼"
-          mode={directionMode}
-          className="touch-dpad-btn down"
-        />
-      </div>
-      {actions && actions.length > 0 && (
-        <div className="touch-actions">
-          {actions.map((action) => (
-            <ActionButton key={action.code} {...action} />
-          ))}
+      <div className="gp-body">
+        <div className="touch-dpad">
+          <DirButton
+            code="ArrowUp"
+            label="▲"
+            mode={directionMode}
+            direction="up"
+          />
+          <DirButton
+            code="ArrowLeft"
+            label="◀"
+            mode={directionMode}
+            direction="left"
+          />
+          <DirButton
+            code="ArrowRight"
+            label="▶"
+            mode={directionMode}
+            direction="right"
+          />
+          <DirButton
+            code="ArrowDown"
+            label="▼"
+            mode={directionMode}
+            direction="down"
+          />
+          <div className="touch-hub" aria-hidden="true">
+            <span className="touch-hub-gem" />
+          </div>
         </div>
-      )}
+        {actions && actions.length > 0 && (
+          <div className="touch-actions">
+            {actions.map((action, i) => (
+              <ActionButton
+                key={action.code}
+                {...action}
+                letter={i === 0 ? "A" : "B"}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
