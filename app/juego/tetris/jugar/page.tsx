@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
 import TetrisGame, { TetrisSkin } from "@/components/games/TetrisGame";
+import TouchControls from "@/components/games/TouchControls";
 
 const GAME_ID = "tetris";
 const GAME_TITLE = "TETRIS";
@@ -162,6 +163,15 @@ export default function TetrisPlayerPage() {
           <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+      </div>
+
+      <TouchControls
+        directionMode="repeat"
+        actions={[{ code: "Space", label: "CAER" }]}
+      />
+
+      <div className="landscape-lock">
+        <div className="pixel">GIRÁ TU DISPOSITIVO A VERTICAL</div>
       </div>
 
       {over && (
