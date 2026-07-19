@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
 import SerpienteGame, { SerpienteSkin } from "@/components/games/SerpienteGame";
+import TouchControls from "@/components/games/TouchControls";
 
 const GAME_ID = "serpiente";
 const GAME_TITLE = "SERPIENTE";
@@ -74,7 +75,7 @@ export default function SerpientePlayerPage() {
   return (
     <div className="av-player fade-in">
       <div className="player-hud">
-        <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+        <div className="hud-stats-row">
           <div className="hud-stat">
             <div className="l">Jugador</div>
             <div className="v" style={{ color: "var(--ink)" }}>
@@ -162,6 +163,12 @@ export default function SerpientePlayerPage() {
           <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+      </div>
+
+      <TouchControls directionMode="tap" />
+
+      <div className="landscape-lock">
+        <div className="pixel">GIRÁ TU DISPOSITIVO A VERTICAL</div>
       </div>
 
       {over && (
