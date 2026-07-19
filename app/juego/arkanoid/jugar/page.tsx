@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
 import ArkanoidGame, { ArkanoidSkin } from "@/components/games/ArkanoidGame";
+import TouchControls from "@/components/games/TouchControls";
 
 const GAME_ID = "arkanoid";
 const GAME_TITLE = "ARKANOID";
@@ -161,6 +162,12 @@ export default function ArkanoidPlayerPage() {
           <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+      </div>
+
+      <TouchControls directionMode="hold" />
+
+      <div className="landscape-lock">
+        <div className="pixel">GIRÁ TU DISPOSITIVO A VERTICAL</div>
       </div>
 
       {over && (
