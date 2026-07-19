@@ -1,6 +1,6 @@
 # SPEC 11 — Apariencia de gamepad neón para los controles táctiles
 
-> **Status:** Draft
+> **Status:** Aprobado
 > **Depends on:** SPEC 10 (controles táctiles) — reviste el `TouchControls` que ese spec creó
 > **Date:** 2026-07-19
 > **Objective:** Reemplazar la apariencia plana de `TouchControls` por el look del gamepad neón de `references/gamepad-assets/` (chasis con glow, D-pad en cruz con flechas SVG + hub con gema pulsante, botones circulares A/B), sin alterar su comportamiento (eventos de teclado sintéticos, `directionMode`, props) ni la garantía de caber sin scroll en portrait.
