@@ -1,6 +1,6 @@
 # SPEC 10 — Controles táctiles para dispositivos móviles
 
-> **Status:** Borrador
+> **Status:** Aprobado
 > **Depends on:** SPEC 05 (Asteroides), SPEC 07 (Tetris), SPEC 08 (Arkanoid), SPEC 09 (Serpiente) — los 4 reproductores reales que este spec modifica
 > **Date:** 2026-07-19
 > **Objective:** Agregar un sistema de controles táctiles compartido (D-pad de 4 flechas + hasta 2 botones de acción, ocultando los que no aplican por juego) debajo del canvas de los 4 juegos reales del catálogo, mostrado automáticamente en dispositivos táctiles (detectados vía `pointer: coarse`) sin alterar el comportamiento de teclado/mouse en desktop, con layout ajustado para caber sin scroll en portrait y un aviso de "girá tu dispositivo" si se detecta landscape en un dispositivo táctil.
