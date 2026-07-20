@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Usa siempre `/frontend-design` para diseñar la interfaz de usuario.
 - El proyecto sigue **Spec Driven Design**: usa `/spec` para diseñar una funcionalidad nueva (produce un spec en `specs/`, no escribe código) y `/spec-impl <NN-nombre-spec>` para implementar un spec ya **Aprobado** (crea una rama con el nombre del spec y avanza paso a paso).
+- Usa `/spec-impl-game <NN-nombre-spec>` en vez de `/spec-impl` cuando el spec Aprobado agrega un **juego** al catálogo: delega la implementación en `/spec-impl` (mismas cuatro fases, mismas pausas) y, al terminar y verificar los criterios de aceptación, encadena automáticamente `skin-designer` y luego `mobile-porter` (agentes, secuencial, nunca en paralelo) sobre el juego recién implementado, para que quede con skins y controles móviles sin pedirlo aparte.
 - Usa `/nuevo-juego <slug>` cuando se quiera agregar un juego jugable nuevo al catálogo: genera el spec combinando los patrones de SPEC 05 (motor en canvas) y SPEC 06 (catálogo/leaderboard en Supabase).
 - Los skills provienen del pack `Klerith/fernando-skills` (`npx skills@latest add Klerith/fernando-skills`, ver `skills-lock.json`).
 

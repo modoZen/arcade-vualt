@@ -936,6 +936,44 @@ a {
   box-shadow: 0 0 10px var(--green);
 }
 
+.cover-frogger {
+  background: linear-gradient(
+    180deg,
+    #123a1f 0%,
+    #123a1f 14%,
+    #111111 14%,
+    #111111 64%,
+    #0a2a4d 64%,
+    #0a2a4d 100%
+  );
+}
+.cover-frogger::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(170, 255, 0, 0.12) 0 18px,
+      transparent 18px 36px
+    ),
+    linear-gradient(#aaff00, #aaff00) 18% 20% / 10% 8% no-repeat,
+    linear-gradient(#e63946, #e63946) 58% 40% / 12% 8% no-repeat,
+    linear-gradient(#7f5539, #7f5539) 30% 76% / 16% 8% no-repeat;
+  filter: drop-shadow(0 0 8px rgba(170, 255, 0, 0.4));
+}
+.cover-frogger::before {
+  content: "";
+  position: absolute;
+  left: 46%;
+  top: 8%;
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #aaff00;
+  box-shadow: 0 0 10px #aaff00;
+}
+
 .cover-rana {
   background: linear-gradient(180deg, #001f2a, #0a0a18);
 }
