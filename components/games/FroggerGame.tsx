@@ -358,7 +358,8 @@ export default function FroggerGame({
     let lives = START_LIVES;
     let lanes: Lane[] = buildLanes(level);
     let goals: boolean[] = new Array(GOAL_STARTS.length).fill(false);
-    let timeLeft = roundTimeForLevel(level);
+    let roundTimeMs = roundTimeForLevel(level);
+    let timeLeft = roundTimeMs;
     let frog: Frog = makeFrog();
     let bestRow = ROW_START;
     let pendingDir: Direction | null = null;
@@ -406,7 +407,7 @@ export default function FroggerGame({
     function resetFrogPosition() {
       frog = makeFrog();
       bestRow = ROW_START;
-      timeLeft = roundTimeForLevel(level);
+      timeLeft = roundTimeMs;
       pendingDir = null;
     }
 
@@ -425,6 +426,7 @@ export default function FroggerGame({
       goals = new Array(GOAL_STARTS.length).fill(false);
       level += 1;
       lanes = buildLanes(level);
+      roundTimeMs = roundTimeForLevel(level);
       resetFrogPosition();
     }
 
@@ -740,7 +742,7 @@ export default function FroggerGame({
         ctx.fill();
       }
 
-      const ratio = Math.max(0, timeLeft / roundTimeForLevel(level));
+      const ratio = Math.max(0, timeLeft / roundTimeMs);
       ctx.fillStyle =
         ratio > 0.5 ? def.frog : ratio > 0.25 ? def.cars[1] : def.cars[0];
       ctx.fillRect(0, 0, CANVAS_W * ratio, 3);
