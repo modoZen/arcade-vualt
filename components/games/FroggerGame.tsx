@@ -340,6 +340,24 @@ export default function FroggerGame({
     if (!ctx2d) return;
     const ctx: CanvasRenderingContext2D = ctx2d;
 
+    let bgCanvas: HTMLCanvasElement | OffscreenCanvas;
+    let bgCtx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+    if (typeof OffscreenCanvas !== "undefined") {
+      const offscreen = new OffscreenCanvas(CANVAS_W, CANVAS_H);
+      const offscreenCtx = offscreen.getContext("2d");
+      if (!offscreenCtx) return;
+      bgCanvas = offscreen;
+      bgCtx = offscreenCtx;
+    } else {
+      const fallback = document.createElement("canvas");
+      fallback.width = CANVAS_W;
+      fallback.height = CANVAS_H;
+      const fallbackCtx = fallback.getContext("2d");
+      if (!fallbackCtx) return;
+      bgCanvas = fallback;
+      bgCtx = fallbackCtx;
+    }
+
     const startCol = Math.floor(COLS / 2);
 
     function makeFrog(): Frog {
@@ -545,24 +563,38 @@ export default function FroggerGame({
       }
     }
 
-    function drawGoals(def: SkinDef) {
+    function renderBackground() {
+      const def = SKINS[skinRef.current];
+
+      for (let row = 0; row < ROWS; row++) {
+        let color: string;
+        if (row === ROW_GOALS) color = def.bgGoal;
+        else if (row >= ROW_RIVER_TOP && row <= ROW_RIVER_BOT)
+          color = def.bgRiver;
+        else if (row >= ROW_ROAD_TOP && row <= ROW_ROAD_BOT) color = def.bgRoad;
+        else if (row === ROW_SAFE_MID || row === ROW_START) color = def.bgGrass;
+        else color = def.bgGrass;
+        bgCtx.fillStyle = color;
+        bgCtx.fillRect(0, row * CELL, CANVAS_W, CELL);
+      }
+
       GOAL_STARTS.forEach((start, i) => {
         const x = start * CELL;
         const y = ROW_GOALS * CELL;
         const w = GOAL_WIDTH * CELL;
-        ctx.fillStyle = def.goalBox;
-        ctx.fillRect(x + 2, y + 2, w - 4, CELL - 4);
-        ctx.strokeStyle = def.goalBorder;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x + 2, y + 2, w - 4, CELL - 4);
+        bgCtx.fillStyle = def.goalBox;
+        bgCtx.fillRect(x + 2, y + 2, w - 4, CELL - 4);
+        bgCtx.strokeStyle = def.goalBorder;
+        bgCtx.lineWidth = 2;
+        bgCtx.strokeRect(x + 2, y + 2, w - 4, CELL - 4);
         if (goals[i]) {
           if (def.glow) {
-            ctx.shadowColor = def.goalFilled;
-            ctx.shadowBlur = 10;
+            bgCtx.shadowColor = def.goalFilled;
+            bgCtx.shadowBlur = 10;
           }
-          ctx.fillStyle = def.goalFilled;
-          ctx.beginPath();
-          ctx.ellipse(
+          bgCtx.fillStyle = def.goalFilled;
+          bgCtx.beginPath();
+          bgCtx.ellipse(
             x + w / 2,
             y + CELL / 2,
             w * 0.28,
@@ -571,8 +603,8 @@ export default function FroggerGame({
             0,
             Math.PI * 2,
           );
-          ctx.fill();
-          if (def.glow) ctx.shadowBlur = 0;
+          bgCtx.fill();
+          if (def.glow) bgCtx.shadowBlur = 0;
         }
       });
     }
@@ -773,19 +805,7 @@ export default function FroggerGame({
     function draw() {
       const def = SKINS[skinRef.current];
 
-      for (let row = 0; row < ROWS; row++) {
-        let color: string;
-        if (row === ROW_GOALS) color = def.bgGoal;
-        else if (row >= ROW_RIVER_TOP && row <= ROW_RIVER_BOT)
-          color = def.bgRiver;
-        else if (row >= ROW_ROAD_TOP && row <= ROW_ROAD_BOT) color = def.bgRoad;
-        else if (row === ROW_SAFE_MID || row === ROW_START) color = def.bgGrass;
-        else color = def.bgGrass;
-        ctx.fillStyle = color;
-        ctx.fillRect(0, row * CELL, CANVAS_W, CELL);
-      }
-
-      drawGoals(def);
+      ctx.drawImage(bgCanvas, 0, 0);
 
       for (const lane of lanes) {
         for (const e of lane.entities) drawEntity(lane, e, def);
@@ -821,6 +841,7 @@ export default function FroggerGame({
     }
 
     notifyState();
+    renderBackground();
 
     let lastTime: number | null = null;
     let rafId = 0;
