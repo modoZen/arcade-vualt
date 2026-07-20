@@ -382,6 +382,11 @@ export default function FroggerGame({
     let bestRow = ROW_START;
     let pendingDir: Direction | null = null;
     let gameOver = false;
+    let bgCacheKey: string | null = null;
+
+    function currentBgCacheKey(): string {
+      return `${skinRef.current}|${goals.map((g) => (g ? 1 : 0)).join("")}`;
+    }
 
     function handleKeyDown(e: KeyboardEvent) {
       const dir = KEY_DIRECTIONS[e.code];
@@ -805,6 +810,11 @@ export default function FroggerGame({
     function draw() {
       const def = SKINS[skinRef.current];
 
+      const expectedBgKey = currentBgCacheKey();
+      if (expectedBgKey !== bgCacheKey) {
+        renderBackground();
+        bgCacheKey = expectedBgKey;
+      }
       ctx.drawImage(bgCanvas, 0, 0);
 
       for (const lane of lanes) {
@@ -841,7 +851,6 @@ export default function FroggerGame({
     }
 
     notifyState();
-    renderBackground();
 
     let lastTime: number | null = null;
     let rafId = 0;
