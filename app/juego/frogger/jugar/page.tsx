@@ -5,11 +5,19 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
 import { useAuth } from "@/app/context/AuthContext";
-import FroggerGame from "@/components/games/FroggerGame";
+import FroggerGame, { FroggerSkin } from "@/components/games/FroggerGame";
+import TouchControls from "@/components/games/TouchControls";
 
 const GAME_ID = "frogger";
 const GAME_TITLE = "FROGGER";
 const LAST_PLAYER_NAME_KEY = "av_last_player_name";
+const SKIN_KEY = "av_frogger_skin";
+const SKIN_OPTIONS: { value: FroggerSkin; label: string }[] = [
+  { value: "retro", label: "Retro" },
+  { value: "neon", label: "Neón" },
+  { value: "pastel", label: "Pastel" },
+  { value: "pixel", label: "Pixel Art" },
+];
 
 export default function FroggerPlayerPage() {
   const { user } = useAuth();
@@ -26,6 +34,15 @@ export default function FroggerPlayerPage() {
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skin, setSkin] = useState<FroggerSkin>(() => {
+    if (typeof window === "undefined") return "retro";
+    return (localStorage.getItem(SKIN_KEY) as FroggerSkin) ?? "retro";
+  });
+
+  const changeSkin = (value: FroggerSkin) => {
+    setSkin(value);
+    localStorage.setItem(SKIN_KEY, value);
+  };
 
   const endGame = () => {
     setFinalScore(score);
@@ -79,6 +96,18 @@ export default function FroggerPlayerPage() {
           </div>
         </div>
         <div className="hud-actions">
+          <select
+            className="skin-select"
+            value={skin}
+            onChange={(e) => changeSkin(e.target.value as FroggerSkin)}
+            aria-label="Skin del tablero"
+          >
+            {SKIN_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
           <button className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
@@ -96,6 +125,7 @@ export default function FroggerPlayerPage() {
           <FroggerGame
             key={runId}
             paused={paused}
+            skin={skin}
             onScoreChange={setScore}
             onLivesChange={setLives}
             onLevelChange={setLevel}
@@ -133,6 +163,12 @@ export default function FroggerPlayerPage() {
           <span>{GAME_TITLE} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+      </div>
+
+      <TouchControls directionMode="tap" />
+
+      <div className="landscape-lock">
+        <div className="pixel">GIRÁ TU DISPOSITIVO A VERTICAL</div>
       </div>
 
       {over && (
