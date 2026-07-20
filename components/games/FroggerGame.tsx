@@ -130,6 +130,15 @@ const ROUND_TIME_BASE_MS = 15000;
 const ROUND_TIME_STEP_MS = 1000;
 const ROUND_TIME_MIN_MS = 6000;
 const MAX_FRAME_DT = 250;
+const LANE_WRAP_MARGIN = 6; // >= ancho máximo de entidad (4 celdas)
+const LANE_TRACK_LENGTH = COLS + LANE_WRAP_MARGIN * 2;
+
+function wrapLaneCol(col: number): number {
+  const shifted = col + LANE_WRAP_MARGIN;
+  const wrapped =
+    ((shifted % LANE_TRACK_LENGTH) + LANE_TRACK_LENGTH) % LANE_TRACK_LENGTH;
+  return wrapped - LANE_WRAP_MARGIN;
+}
 
 function roundTimeForLevel(level: number): number {
   return Math.max(
@@ -331,9 +340,12 @@ export default function FroggerGame({
     function moveLanes(dt: number) {
       for (const lane of lanes) {
         for (const e of lane.entities) {
-          e.col += (lane.speed * lane.dir * dt) / 16;
-          if (lane.dir === 1 && e.col > COLS) e.col = -e.width;
-          if (lane.dir === -1 && e.col + e.width < 0) e.col = COLS;
+          // lane.speed está en px/frame (16ms); e.col vive en celdas, no px.
+          e.col += (lane.speed * lane.dir * dt) / 16 / CELL;
+          // Wrap modular (no un reset "a lo bruto"): todas las entidades del
+          // carril comparten velocidad, así que su espaciado relativo debe
+          // mantenerse constante para siempre; solo un wrap periódico lo logra.
+          e.col = wrapLaneCol(e.col);
           if (e.type === "turtle") {
             e.cycleT = (e.cycleT ?? 0) + dt;
             const cycle = TURTLE_VISIBLE_MS + TURTLE_SUBMERGED_MS;
@@ -377,7 +389,7 @@ export default function FroggerGame({
         killFrog();
         return;
       }
-      frog.col += (lane.speed * lane.dir * dt) / 16;
+      frog.col += (lane.speed * lane.dir * dt) / 16 / CELL;
       if (frog.col < 0 || frog.col >= COLS) killFrog();
     }
 
