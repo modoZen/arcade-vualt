@@ -588,7 +588,9 @@ export default function FroggerGame({
       if (e.type === "car") {
         const carColor =
           def.cars[Math.abs(Math.floor(e.col)) % def.cars.length];
-        ctx.shadowColor = carColor;
+        if (def.glow) {
+          ctx.shadowColor = carColor;
+        }
         ctx.fillStyle = carColor;
         ctx.fillRect(x + 2, y + 6, w - 4, h - 16);
         if (def.flat) {
@@ -596,7 +598,9 @@ export default function FroggerGame({
           ctx.lineWidth = 1.5;
           ctx.strokeRect(x + 2, y + 6, w - 4, h - 16);
         }
-        ctx.shadowBlur = def.glow ? 6 : 0;
+        if (def.glow) {
+          ctx.shadowBlur = 6;
+        }
         ctx.fillStyle = def.wheels;
         const wheelY = y + h - 10;
         ctx.beginPath();
@@ -604,7 +608,9 @@ export default function FroggerGame({
         ctx.arc(x + w - 8, wheelY, 5, 0, Math.PI * 2);
         ctx.fill();
       } else if (e.type === "truck") {
-        ctx.shadowColor = def.truckBody;
+        if (def.glow) {
+          ctx.shadowColor = def.truckBody;
+        }
         ctx.fillStyle = def.truckBody;
         ctx.fillRect(x + 2, y + 4, w - 4, h - 12);
         ctx.fillStyle = def.truckCab;
@@ -614,7 +620,9 @@ export default function FroggerGame({
           ctx.lineWidth = 1.5;
           ctx.strokeRect(x + 2, y + 4, w - 4, h - 12);
         }
-        ctx.shadowBlur = def.glow ? 6 : 0;
+        if (def.glow) {
+          ctx.shadowBlur = 6;
+        }
         ctx.fillStyle = def.wheels;
         const wheelY = y + h - 8;
         ctx.beginPath();
@@ -622,10 +630,14 @@ export default function FroggerGame({
         ctx.arc(x + w - 8, wheelY, 5, 0, Math.PI * 2);
         ctx.fill();
       } else if (e.type === "log") {
-        ctx.shadowColor = def.log;
+        if (def.glow) {
+          ctx.shadowColor = def.log;
+        }
         ctx.fillStyle = def.log;
         ctx.fillRect(x + 1, y + 8, w - 2, h - 16);
-        ctx.shadowBlur = 0;
+        if (def.glow) {
+          ctx.shadowBlur = 0;
+        }
         ctx.strokeStyle = def.logLines;
         ctx.lineWidth = 1;
         for (let lx = x + 6; lx < x + w - 6; lx += 10) {
@@ -639,20 +651,26 @@ export default function FroggerGame({
           const cx = x + i * CELL + CELL / 2;
           const cy = y + h / 2;
           if (e.submerged) {
-            ctx.shadowBlur = 0;
+            if (def.glow) {
+              ctx.shadowBlur = 0;
+            }
             ctx.strokeStyle = def.turtleSubmerged;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(cx, cy, CELL * 0.35, 0, Math.PI * 2);
             ctx.stroke();
           } else {
-            ctx.shadowColor = def.turtle;
-            ctx.shadowBlur = def.glow ? 6 : 0;
+            if (def.glow) {
+              ctx.shadowColor = def.turtle;
+              ctx.shadowBlur = 6;
+            }
             ctx.fillStyle = def.turtle;
             ctx.beginPath();
             ctx.arc(cx, cy, CELL * 0.35, 0, Math.PI * 2);
             ctx.fill();
-            ctx.shadowBlur = 0;
+            if (def.glow) {
+              ctx.shadowBlur = 0;
+            }
             ctx.strokeStyle = def.turtleShell;
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -661,7 +679,9 @@ export default function FroggerGame({
           }
         }
       }
-      ctx.shadowBlur = 0;
+      if (def.glow) {
+        ctx.shadowBlur = 0;
+      }
     }
 
     function drawFrog(def: SkinDef) {
@@ -684,7 +704,9 @@ export default function FroggerGame({
         ctx.lineWidth = 1.5;
         ctx.stroke();
       }
-      ctx.shadowBlur = 0;
+      if (def.glow) {
+        ctx.shadowBlur = 0;
+      }
 
       const legSpread = frog.animating ? 10 : 4;
       ctx.strokeStyle = def.frog;
