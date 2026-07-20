@@ -1,6 +1,6 @@
 # SPEC 12 — Optimización de rendimiento del render de Frogger
 
-> **Status:** Borrador
+> **Status:** Aprobado
 > **Depends on:** `specs/game-jam/frogger/01-frogger-core.md` (Frogger core) — optimiza el motor `components/games/FroggerGame.tsx` que ese spec implementó, sin cambiar su comportamiento ni su apariencia
 > **Date:** 2026-07-20
 > **Objective:** Reducir el costo por frame del `draw()` de `FroggerGame.tsx` sin alterar una sola diferencia visual, atacando tres hotspots concretos: (1) pre-renderizar el fondo estático en un canvas offscreen invalidado solo al cambiar `goals`/skin en vez de redibujar 14 `fillRect` por frame, (2) saltear por completo la manipulación de `shadowBlur`/`shadowColor` en `drawEntity` cuando el skin no tiene `glow`, y (3) cachear `roundTimeForLevel(level)` en una variable recalculada por ronda en vez de invocarla en cada `drawHud`.
