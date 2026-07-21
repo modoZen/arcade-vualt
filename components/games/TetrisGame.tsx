@@ -192,6 +192,24 @@ export default function TetrisGame({
     if (!ctx2d) return;
     const ctx: CanvasRenderingContext2D = ctx2d;
 
+    let bgCanvas: HTMLCanvasElement | OffscreenCanvas;
+    let bgCtx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+    if (typeof OffscreenCanvas !== "undefined") {
+      const offscreen = new OffscreenCanvas(BOARD_W, BOARD_H);
+      const offscreenCtx = offscreen.getContext("2d");
+      if (!offscreenCtx) return;
+      bgCanvas = offscreen;
+      bgCtx = offscreenCtx;
+    } else {
+      const fallback = document.createElement("canvas");
+      fallback.width = BOARD_W;
+      fallback.height = BOARD_H;
+      const fallbackCtx = fallback.getContext("2d");
+      if (!fallbackCtx) return;
+      bgCanvas = fallback;
+      bgCtx = fallbackCtx;
+    }
+
     function createBoard(): number[][] {
       return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
     }
@@ -293,6 +311,7 @@ export default function TetrisGame({
     function lockPiece() {
       merge();
       clearLines();
+      boardVersion++;
       spawn();
     }
 
@@ -306,7 +325,7 @@ export default function TetrisGame({
     }
 
     function drawBlock(
-      context: CanvasRenderingContext2D,
+      context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
       x: number,
       y: number,
       colorIndex: number,
@@ -335,21 +354,35 @@ export default function TetrisGame({
       context.globalAlpha = 1;
     }
 
-    function drawGrid() {
-      ctx.strokeStyle = SKINS[skinRef.current].grid;
-      ctx.lineWidth = 0.5;
+    function drawGrid(
+      context: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
+    ) {
+      context.strokeStyle = SKINS[skinRef.current].grid;
+      context.lineWidth = 0.5;
       for (let c = 1; c < COLS; c++) {
-        ctx.beginPath();
-        ctx.moveTo(c * BLOCK, 0);
-        ctx.lineTo(c * BLOCK, ROWS * BLOCK);
-        ctx.stroke();
+        context.beginPath();
+        context.moveTo(c * BLOCK, 0);
+        context.lineTo(c * BLOCK, ROWS * BLOCK);
+        context.stroke();
       }
       for (let r = 1; r < ROWS; r++) {
-        ctx.beginPath();
-        ctx.moveTo(0, r * BLOCK);
-        ctx.lineTo(COLS * BLOCK, r * BLOCK);
-        ctx.stroke();
+        context.beginPath();
+        context.moveTo(0, r * BLOCK);
+        context.lineTo(COLS * BLOCK, r * BLOCK);
+        context.stroke();
       }
+    }
+
+    function currentBgCacheKey(): string {
+      return `${skinRef.current}|${boardVersion}`;
+    }
+
+    function renderBackground() {
+      bgCtx.clearRect(0, 0, BOARD_W, BOARD_H);
+      drawGrid(bgCtx);
+      for (let r = 0; r < ROWS; r++)
+        for (let c = 0; c < COLS; c++)
+          drawBlock(bgCtx, c, r, board[r][c], BLOCK);
     }
 
     function drawNext() {
@@ -404,10 +437,13 @@ export default function TetrisGame({
 
       ctx.save();
       ctx.translate(BOARD_X, BOARD_Y);
-      drawGrid();
 
-      for (let r = 0; r < ROWS; r++)
-        for (let c = 0; c < COLS; c++) drawBlock(ctx, c, r, board[r][c], BLOCK);
+      const expectedBgKey = currentBgCacheKey();
+      if (expectedBgKey !== bgCacheKey) {
+        renderBackground();
+        bgCacheKey = expectedBgKey;
+      }
+      ctx.drawImage(bgCanvas, 0, 0);
 
       const gy = ghostY();
       for (let r = 0; r < current.shape.length; r++)
@@ -450,6 +486,8 @@ export default function TetrisGame({
     let gameOver = false;
     let dropInterval = 1000;
     let dropAccum = 0;
+    let boardVersion = 0;
+    let bgCacheKey: string | null = null;
 
     spawn();
 
