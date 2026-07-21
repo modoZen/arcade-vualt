@@ -24,7 +24,7 @@ export default function GamePlayerPage({
       .finally(() => setLoadingGame(false));
   }, [id]);
 
-  const { username } = useUser();
+  const { user, username } = useUser();
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [paused, setPaused] = useState(false);
@@ -70,7 +70,7 @@ export default function GamePlayerPage({
           <div className="hud-stat">
             <div className="l">Jugador</div>
             <div className="v" style={{ color: "var(--ink)" }}>
-              {name}
+              {user ? (username ?? "INVITADO") : name}
             </div>
           </div>
           <div className="hud-stat">
@@ -147,13 +147,15 @@ export default function GamePlayerPage({
             <div className="final">{score.toLocaleString("es-ES")}</div>
             {!saved ? (
               <div className="input-row">
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value.toUpperCase().slice(0, 10))
-                  }
-                  placeholder="TUS INICIALES"
-                />
+                {!user && (
+                  <input
+                    value={name}
+                    onChange={(e) =>
+                      setName(e.target.value.toUpperCase().slice(0, 10))
+                    }
+                    placeholder="TUS INICIALES"
+                  />
+                )}
                 <button className="btn yellow" onClick={() => setSaved(true)}>
                   GUARDAR PUNTUACIÓN
                 </button>
