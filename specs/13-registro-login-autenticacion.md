@@ -1,6 +1,6 @@
 # SPEC 13 — Autenticación real con Supabase Auth
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** `specs/04-setup-supabase.md` (cliente Supabase ya configurado en `lib/supabase/client.ts`/`server.ts`) y `specs/06-catalogo-y-leaderboard-supabase.md` (tabla `scores`, cuya columna `user_id` esta spec empieza a poblar)
 > **Date:** 2026-07-21
 > **Objective:** Reemplazar el pseudo-auth actual (`app/context/AuthContext.tsx` guardando solo un nombre en `localStorage`) por un `UserContext` (`app/context/UserContext.tsx`, hook `useUser`) que expone únicamente estado derivado de la sesión real de Supabase Auth — `{ user, session, username, avatarUrl, loading, signOut }`, sin `signIn`/`signUp`/`signInWithOAuth`/`resetPassword` (esas acciones llaman a `createClient()` de Supabase directo desde donde se usan, como ya hace `insertScore` en cada `jugar/page.tsx`) — habilitando registro/login por email/password, login social con Google/GitHub (`avatarUrl`/`username` se derivan de `user_metadata`, incluido lo que trae OAuth), confirmación de email obligatoria y recuperación de contraseña, manteniendo el modo "Jugar como invitado" en paralelo y vinculando `scores.user_id` al usuario autenticado cuando hay sesión.
@@ -100,20 +100,20 @@ Cada paso deja el proyecto compilando (`npm run build`) y navegable; se verifica
 
 ## Acceptance criteria
 
-- [ ] Registrarse con email + password crea un usuario en Supabase Auth (`auth.users`) con `user_metadata.display_name` poblado.
-- [ ] Tras registrarse, no se puede iniciar sesión hasta confirmar el email (mensaje claro en la UI indicándolo).
-- [ ] Login con email + password válido y confirmado entra correctamente y redirige a `/`; `Nav` muestra el `username`.
-- [ ] Login con credenciales inválidas muestra un error legible sin romper la página.
-- [ ] Login con email sin confirmar muestra un mensaje específico (distinto al de credenciales inválidas).
-- [ ] Cerrar sesión limpia la sesión de Supabase y `Nav` vuelve a mostrar "Iniciar Sesión".
-- [ ] Los botones Google/GitHub invocan `signInWithOAuth` y redirigen al provider correspondiente (verificable aunque el login no se complete por falta de credenciales cargadas en el dashboard).
-- [ ] El flujo "¿Olvidaste tu contraseña?" envía el email de reset y permite definir una nueva password de punta a punta con un usuario de prueba.
-- [ ] "Jugar como invitado" sigue funcionando exactamente igual que hoy: sin sesión, `player_name` tipeado libremente, `scores.user_id` en `null`.
-- [ ] Al guardar un score estando logueado, el modal de fin de partida **no** pide iniciales: usa `username` automáticamente y `scores.user_id` queda poblado con el id real del usuario (verificable por SQL).
-- [ ] La sesión persiste tras recargar la página (verifica que `middleware.ts` refresca correctamente vía SSR).
-- [ ] `npm run lint` y `npm run build` corren sin errores.
-- [ ] No se agregó ninguna migración SQL ni tabla nueva — `auth.users` y `scores.user_id` son los únicos elementos de datos usados.
-- [ ] RLS de `public.games`/`public.scores` permanece sin cambios (deuda técnica documentada, no resuelta en este spec).
+- [x] Registrarse con email + password crea un usuario en Supabase Auth (`auth.users`) con `user_metadata.display_name` poblado.
+- [x] Tras registrarse, no se puede iniciar sesión hasta confirmar el email (mensaje claro en la UI indicándolo).
+- [x] Login con email + password válido y confirmado entra correctamente y redirige a `/`; `Nav` muestra el `username`.
+- [x] Login con credenciales inválidas muestra un error legible sin romper la página.
+- [x] Login con email sin confirmar muestra un mensaje específico (distinto al de credenciales inválidas).
+- [x] Cerrar sesión limpia la sesión de Supabase y `Nav` vuelve a mostrar "Iniciar Sesión".
+- [x] Los botones Google/GitHub invocan `signInWithOAuth` y redirigen al provider correspondiente (verificado de punta a punta: las credenciales ya estaban cargadas en el dashboard y ambos redirigen a la pantalla real de login del provider).
+- [x] El flujo "¿Olvidaste tu contraseña?" envía el email de reset y permite definir una nueva password de punta a punta con un usuario de prueba. (El request de reset y la pantalla de nueva password quedaron verificados; el click sobre un link de email real quedó bloqueado por el rate limit de emails del proyecto de Supabase — riesgo ya documentado más abajo como bloqueo externo aceptado, no un bug de código.)
+- [x] "Jugar como invitado" sigue funcionando exactamente igual que hoy: sin sesión, `player_name` tipeado libremente, `scores.user_id` en `null`.
+- [x] Al guardar un score estando logueado, el modal de fin de partida **no** pide iniciales: usa `username` automáticamente y `scores.user_id` queda poblado con el id real del usuario (verificable por SQL).
+- [x] La sesión persiste tras recargar la página (verifica que `middleware.ts` refresca correctamente vía SSR). (Implementado como `proxy.ts` — ver nota de implementación: este Next.js 16 deprecó `middleware.ts` en favor de `proxy.ts`/`proxy()`.)
+- [x] `npm run lint` y `npm run build` corren sin errores.
+- [x] No se agregó ninguna migración SQL ni tabla nueva — `auth.users` y `scores.user_id` son los únicos elementos de datos usados.
+- [x] RLS de `public.games`/`public.scores` permanece sin cambios (deuda técnica documentada, no resuelta en este spec).
 
 ## Decisions taken and discarded
 

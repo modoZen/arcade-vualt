@@ -45,7 +45,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const user = session?.user ?? null;
   const username =
-    (user?.user_metadata?.display_name as string | undefined) ?? null;
+    (user?.user_metadata?.display_name as string | undefined) ??
+    (user?.user_metadata?.full_name as string | undefined) ??
+    (user?.user_metadata?.name as string | undefined) ??
+    (user?.user_metadata?.user_name as string | undefined) ??
+    null;
   const avatarUrl =
     (user?.user_metadata?.avatar_url as string | undefined) ??
     (user?.user_metadata?.picture as string | undefined) ??
