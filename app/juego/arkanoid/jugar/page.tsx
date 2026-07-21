@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
-import { useAuth } from "@/app/context/AuthContext";
+import { useUser } from "@/app/context/UserContext";
 import ArkanoidGame, { ArkanoidSkin } from "@/components/games/ArkanoidGame";
 import TouchControls from "@/components/games/TouchControls";
 
@@ -19,7 +19,7 @@ const SKIN_OPTIONS: { value: ArkanoidSkin; label: string }[] = [
 ];
 
 export default function ArkanoidPlayerPage() {
-  const { user } = useAuth();
+  const { user, username } = useUser();
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [level, setLevel] = useState(1);
@@ -28,8 +28,8 @@ export default function ArkanoidPlayerPage() {
   const [finalScore, setFinalScore] = useState(0);
   const [runId, setRunId] = useState(0);
   const [name, setName] = useState(() => {
-    if (typeof window === "undefined") return user ?? "INVITADO";
-    return localStorage.getItem(LAST_PLAYER_NAME_KEY) ?? user ?? "INVITADO";
+    if (typeof window === "undefined") return username ?? "INVITADO";
+    return localStorage.getItem(LAST_PLAYER_NAME_KEY) ?? username ?? "INVITADO";
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -61,12 +61,14 @@ export default function ArkanoidPlayerPage() {
   const saveScore = async () => {
     setSaving(true);
     const supabase = createClient();
+    const playerName = user ? (username ?? "INVITADO") : name;
     await insertScore(supabase, {
       gameId: GAME_ID,
-      playerName: name,
+      playerName,
       score: finalScore,
+      userId: user?.id ?? null,
     });
-    localStorage.setItem(LAST_PLAYER_NAME_KEY, name);
+    if (!user) localStorage.setItem(LAST_PLAYER_NAME_KEY, name);
     setSaving(false);
     setSaved(true);
   };
@@ -78,7 +80,7 @@ export default function ArkanoidPlayerPage() {
           <div className="hud-stat">
             <div className="l">Jugador</div>
             <div className="v" style={{ color: "var(--ink)" }}>
-              {name}
+              {user ? (username ?? "INVITADO") : name}
             </div>
           </div>
           <div className="hud-stat">
@@ -178,13 +180,15 @@ export default function ArkanoidPlayerPage() {
             <div className="final">{finalScore.toLocaleString("es-ES")}</div>
             {!saved ? (
               <div className="input-row">
-                <input
-                  value={name}
-                  onChange={(e) =>
-                    setName(e.target.value.toUpperCase().slice(0, 10))
-                  }
-                  placeholder="TUS INICIALES"
-                />
+                {!user && (
+                  <input
+                    value={name}
+                    onChange={(e) =>
+                      setName(e.target.value.toUpperCase().slice(0, 10))
+                    }
+                    placeholder="TUS INICIALES"
+                  />
+                )}
                 <button
                   className="btn yellow"
                   onClick={saveScore}

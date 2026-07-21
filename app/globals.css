@@ -288,6 +288,44 @@ a {
 .av-nav .auth-btn {
   margin-left: 16px;
 }
+.av-nav .account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 16px;
+}
+.account-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(0, 245, 255, 0.4);
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.35);
+  flex-shrink: 0;
+}
+.account-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--cyan);
+  background: linear-gradient(
+    45deg,
+    rgba(255, 0, 110, 0.3),
+    rgba(0, 245, 255, 0.3)
+  );
+}
+.account-name {
+  font-family: var(--pixel);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .av-nav .hamburger {
   display: none;
 }
@@ -300,6 +338,9 @@ a {
     display: none;
   }
   .av-nav .coin-counter {
+    display: none;
+  }
+  .av-nav .account {
     display: none;
   }
   .av-nav .hamburger {
@@ -333,6 +374,23 @@ a {
 }
 .av-mobile-panel a.active {
   color: var(--cyan);
+}
+.mobile-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px dashed var(--line-2);
+}
+.mobile-account-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mobile-account-info .account-name {
+  max-width: 110px;
 }
 .av-mobile-backdrop {
   position: fixed;
