@@ -80,6 +80,10 @@ interface Food {
   x: number;
   y: number;
   key: FruitKey;
+  destX: number;
+  destY: number;
+  destW: number;
+  destH: number;
 }
 
 const KEY_DIRECTIONS: Record<string, Direction> = {
@@ -205,6 +209,30 @@ export default function SerpienteGame({
     if (!ctx2d) return;
     const ctx: CanvasRenderingContext2D = ctx2d;
 
+    let bgCanvas: HTMLCanvasElement | OffscreenCanvas;
+    let bgCtx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+    if (typeof OffscreenCanvas !== "undefined") {
+      const offscreen = new OffscreenCanvas(W, H);
+      const offscreenCtx = offscreen.getContext("2d");
+      if (!offscreenCtx) return;
+      bgCanvas = offscreen;
+      bgCtx = offscreenCtx;
+    } else {
+      const fallback = document.createElement("canvas");
+      fallback.width = W;
+      fallback.height = H;
+      const fallbackCtx = fallback.getContext("2d");
+      if (!fallbackCtx) return;
+      bgCanvas = fallback;
+      bgCtx = fallbackCtx;
+    }
+
+    let bgCacheKey: string | null = null;
+
+    function currentBgCacheKey(): string {
+      return skinRef.current;
+    }
+
     const center = Math.floor(GRID / 2);
     const segments: Segment[] = [
       { x: center, y: center },
@@ -236,7 +264,16 @@ export default function SerpienteGame({
     function spawnFood(): Food {
       const cell = randomFreeCell();
       const key = FRUIT_KEYS[Math.floor(Math.random() * FRUIT_KEYS.length)];
-      return { x: cell.x, y: cell.y, key };
+      const rect = FRUIT_ATLAS[key];
+      const padding = 4;
+      const maxW = CELL - padding * 2;
+      const maxH = CELL - padding * 2;
+      const scale = Math.min(maxW / rect.w, maxH / rect.h);
+      const destW = rect.w * scale;
+      const destH = rect.h * scale;
+      const destX = cell.x * CELL + (CELL - destW) / 2;
+      const destY = cell.y * CELL + (CELL - destH) / 2;
+      return { x: cell.x, y: cell.y, key, destX, destY, destW, destH };
     }
 
     let food: Food = spawnFood();
@@ -296,19 +333,21 @@ export default function SerpienteGame({
 
     window.addEventListener("keydown", handleKeyDown);
 
-    function drawGrid() {
+    function renderBackground() {
       const def = SKINS[skinRef.current];
-      ctx.strokeStyle = def.grid ?? GRID_COLOR;
-      ctx.lineWidth = 1;
+      bgCtx.fillStyle = def.bg ?? BG_COLOR;
+      bgCtx.fillRect(0, 0, W, H);
+      bgCtx.strokeStyle = def.grid ?? GRID_COLOR;
+      bgCtx.lineWidth = 1;
       for (let i = 1; i < GRID; i++) {
-        ctx.beginPath();
-        ctx.moveTo(i * CELL, 0);
-        ctx.lineTo(i * CELL, H);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(0, i * CELL);
-        ctx.lineTo(W, i * CELL);
-        ctx.stroke();
+        bgCtx.beginPath();
+        bgCtx.moveTo(i * CELL, 0);
+        bgCtx.lineTo(i * CELL, H);
+        bgCtx.stroke();
+        bgCtx.beginPath();
+        bgCtx.moveTo(0, i * CELL);
+        bgCtx.lineTo(W, i * CELL);
+        bgCtx.stroke();
       }
     }
 
@@ -340,21 +379,26 @@ export default function SerpienteGame({
     function drawFood() {
       const rect = FRUIT_ATLAS[food.key];
       if (!fruitsLoaded || !fruitsImg) return;
-      const padding = 4;
-      const maxW = CELL - padding * 2;
-      const maxH = CELL - padding * 2;
-      const scale = Math.min(maxW / rect.w, maxH / rect.h);
-      const dw = rect.w * scale;
-      const dh = rect.h * scale;
-      const dx = food.x * CELL + (CELL - dw) / 2;
-      const dy = food.y * CELL + (CELL - dh) / 2;
-      ctx.drawImage(fruitsImg, rect.x, rect.y, rect.w, rect.h, dx, dy, dw, dh);
+      ctx.drawImage(
+        fruitsImg,
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        food.destX,
+        food.destY,
+        food.destW,
+        food.destH,
+      );
     }
 
     function draw() {
-      ctx.fillStyle = SKINS[skinRef.current].bg ?? BG_COLOR;
-      ctx.fillRect(0, 0, W, H);
-      drawGrid();
+      const expectedBgKey = currentBgCacheKey();
+      if (expectedBgKey !== bgCacheKey) {
+        renderBackground();
+        bgCacheKey = expectedBgKey;
+      }
+      ctx.drawImage(bgCanvas, 0, 0);
       drawFood();
       drawSnake();
     }
