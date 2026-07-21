@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { insertScore } from "@/lib/supabase/scores";
-import { useAuth } from "@/app/context/AuthContext";
+import { useUser } from "@/app/context/UserContext";
 import ArkanoidGame, { ArkanoidSkin } from "@/components/games/ArkanoidGame";
 import TouchControls from "@/components/games/TouchControls";
 
@@ -19,7 +19,7 @@ const SKIN_OPTIONS: { value: ArkanoidSkin; label: string }[] = [
 ];
 
 export default function ArkanoidPlayerPage() {
-  const { user } = useAuth();
+  const { username } = useUser();
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [level, setLevel] = useState(1);
@@ -28,8 +28,8 @@ export default function ArkanoidPlayerPage() {
   const [finalScore, setFinalScore] = useState(0);
   const [runId, setRunId] = useState(0);
   const [name, setName] = useState(() => {
-    if (typeof window === "undefined") return user ?? "INVITADO";
-    return localStorage.getItem(LAST_PLAYER_NAME_KEY) ?? user ?? "INVITADO";
+    if (typeof window === "undefined") return username ?? "INVITADO";
+    return localStorage.getItem(LAST_PLAYER_NAME_KEY) ?? username ?? "INVITADO";
   });
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);

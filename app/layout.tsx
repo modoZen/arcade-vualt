@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { Press_Start_2P, JetBrains_Mono, Courier_Prime } from "next/font/google";
-import { AuthProvider } from "./context/AuthContext";
+import {
+  Press_Start_2P,
+  JetBrains_Mono,
+  Courier_Prime,
+} from "next/font/google";
+import { UserProvider } from "./context/UserContext";
 import { Nav } from "@/components/Nav";
 import "./globals.css";
 
@@ -41,7 +45,7 @@ export default function RootLayout({
         <div className="av-bg" />
         <div className="av-noise" />
         <div id="root">
-          <AuthProvider>
+          <UserProvider>
             <Nav />
             <main className="av-main">{children}</main>
             <footer
@@ -57,7 +61,7 @@ export default function RootLayout({
             >
               © 2026 ARCADE VAULT · HECHO CON PIXELES Y NEÓN · v2.6.0
             </footer>
-          </AuthProvider>
+          </UserProvider>
         </div>
       </body>
     </html>

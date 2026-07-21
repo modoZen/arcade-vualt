@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getGameById } from "@/lib/supabase/games";
-import { useAuth } from "@/app/context/AuthContext";
+import { useUser } from "@/app/context/UserContext";
 import type { Game } from "@/lib/supabase/types";
 
 export default function GamePlayerPage({
@@ -24,12 +24,12 @@ export default function GamePlayerPage({
       .finally(() => setLoadingGame(false));
   }, [id]);
 
-  const { user } = useAuth();
+  const { username } = useUser();
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
-  const [name, setName] = useState(user ?? "INVITADO");
+  const [name, setName] = useState(username ?? "INVITADO");
   const [saved, setSaved] = useState(false);
   const level = Math.floor(score / 2500) + 1;
 
