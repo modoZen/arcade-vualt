@@ -5,10 +5,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@/app/context/UserContext";
 
+function AccountAvatar({
+  avatarUrl,
+  username,
+}: {
+  avatarUrl: string | null;
+  username: string;
+}) {
+  const [broken, setBroken] = useState(false);
+
+  if (avatarUrl && !broken) {
+    return (
+      <img
+        src={avatarUrl}
+        alt=""
+        className="account-avatar"
+        onError={() => setBroken(true)}
+      />
+    );
+  }
+
+  return (
+    <div className="account-avatar account-avatar-fallback">
+      {username.charAt(0)}
+    </div>
+  );
+}
+
 export function Nav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const { username, signOut } = useUser();
+  const { username, avatarUrl, signOut } = useUser();
 
   const isActive = (
     name: "inicio" | "biblioteca" | "salon" | "acerca-de" | "auth",
@@ -58,9 +85,15 @@ export function Nav() {
           <span>CRÉDITOS · 03</span>
         </div>
         {username ? (
-          <button className="btn ghost auth-btn" onClick={signOut}>
-            {username} ▾
-          </button>
+          <div className="account">
+            <AccountAvatar avatarUrl={avatarUrl} username={username} />
+            <span className="account-name" title={username}>
+              {username}
+            </span>
+            <button className="btn ghost auth-btn" onClick={signOut}>
+              Cerrar Sesión
+            </button>
+          </div>
         ) : (
           <Link href="/auth" className="btn auth-btn">
             Iniciar Sesión
@@ -114,13 +147,33 @@ export function Nav() {
         >
           Acerca de
         </Link>
-        <Link
-          href="/auth"
-          className={isActive("auth") ? "active" : ""}
-          onClick={close}
-        >
-          {username ? "Cuenta" : "Iniciar Sesión"}
-        </Link>
+        {username ? (
+          <div className="mobile-account">
+            <div className="mobile-account-info">
+              <AccountAvatar avatarUrl={avatarUrl} username={username} />
+              <span className="account-name" title={username}>
+                {username}
+              </span>
+            </div>
+            <button
+              className="btn ghost"
+              onClick={() => {
+                signOut();
+                close();
+              }}
+            >
+              Cerrar Sesión
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/auth"
+            className={isActive("auth") ? "active" : ""}
+            onClick={close}
+          >
+            Iniciar Sesión
+          </Link>
+        )}
         <div style={{ flex: 1 }}></div>
         <div
           className="pixel"
