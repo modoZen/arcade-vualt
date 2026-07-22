@@ -30,7 +30,19 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Refresca la sesión — necesario para que Server Components lean cookies actualizadas.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/auth/actualizar-password" && !user) {
+    return NextResponse.redirect(new URL("/auth/recuperar", request.url));
+  }
+
+  if (pathname === "/auth" && user) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   return response;
 }
