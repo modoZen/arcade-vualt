@@ -6,6 +6,15 @@ import { createClient } from "@/lib/supabase/client";
 
 type LoginError = "invalid" | "unconfirmed" | "unknown" | null;
 
+function passwordError(pw: string): string | null {
+  if (pw.length < 8) return "La contraseña debe tener al menos 8 caracteres.";
+  if (!/[a-z]/.test(pw)) return "La contraseña debe incluir una minúscula.";
+  if (!/[A-Z]/.test(pw)) return "La contraseña debe incluir una mayúscula.";
+  if (!/[0-9]/.test(pw)) return "La contraseña debe incluir un dígito.";
+  if (!/[^a-zA-Z0-9]/.test(pw)) return "La contraseña debe incluir un símbolo.";
+  return null;
+}
+
 export default function AuthPage() {
   const router = useRouter();
   const [tab, setTab] = useState<"in" | "up">("in");
@@ -57,6 +66,12 @@ export default function AuthPage() {
   const submitSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSignupError(null);
+
+    const passErr = passwordError(signupPass);
+    if (passErr) {
+      setSignupError(passErr);
+      return;
+    }
 
     if (signupPass !== signupConfirm) {
       setSignupError("Las contraseñas no coinciden.");
