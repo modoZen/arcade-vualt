@@ -1,6 +1,6 @@
 # SPEC 14 — Hardening de seguridad: RLS, contraseñas y headers HTTP
 
-> **Status:** Borrador
+> **Status:** Aprobado
 > **Depends on:** `specs/06-catalogo-y-leaderboard-supabase.md` (tablas `games`/`scores` que esta spec protege con RLS) y `specs/13-registro-login-autenticacion.md` (`scores.user_id` poblado por sesión real, y donde RLS quedó documentada explícitamente como deuda técnica sin resolver)
 > **Date:** 2026-07-21
 > **Objective:** Cerrar el checklist de seguridad básico (`references/security/checklist.md`) habilitando Row Level Security con políticas concretas en `public.games`/`public.scores` (lectura pública, inserción de scores restringida por identidad), agregando validación de complejidad de contraseña en el formulario de registro (cliente, sin llamar a Supabase si no pasa) junto con su configuración espejo en el dashboard de Supabase Auth, activando ahí mismo la protección de contraseñas filtradas y el límite de rate de signups, sumando protección de rutas en el proxy (`/auth/actualizar-password` y `/auth`), y agregando los tres headers de seguridad HTTP del checklist en `next.config.ts`.
