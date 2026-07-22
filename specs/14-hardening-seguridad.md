@@ -1,6 +1,6 @@
 # SPEC 14 — Hardening de seguridad: RLS, contraseñas y headers HTTP
 
-> **Status:** Aprobado
+> **Status:** Implementado
 > **Depends on:** `specs/06-catalogo-y-leaderboard-supabase.md` (tablas `games`/`scores` que esta spec protege con RLS) y `specs/13-registro-login-autenticacion.md` (`scores.user_id` poblado por sesión real, y donde RLS quedó documentada explícitamente como deuda técnica sin resolver)
 > **Date:** 2026-07-21
 > **Objective:** Cerrar el checklist de seguridad básico (`references/security/checklist.md`) habilitando Row Level Security con políticas concretas en `public.games`/`public.scores` (lectura pública, inserción de scores restringida por identidad), agregando validación de complejidad de contraseña en el formulario de registro (cliente, sin llamar a Supabase si no pasa) junto con su configuración espejo en el dashboard de Supabase Auth, activando ahí mismo la protección de contraseñas filtradas y el límite de rate de signups, sumando protección de rutas en el proxy (`/auth/actualizar-password` y `/auth`), y agregando los tres headers de seguridad HTTP del checklist en `next.config.ts`.
@@ -105,21 +105,21 @@ Cada paso deja el proyecto compilando (`npm run build`) y navegable; se verifica
 
 ## Acceptance criteria
 
-- [ ] Los 3 headers de seguridad (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`) están presentes en la respuesta HTTP de cualquier ruta de la app.
-- [ ] Intentar crear una cuenta con una contraseña que no cumple las 5 reglas (≥8 caracteres, minúscula, mayúscula, dígito, símbolo) muestra un error claro en `app/auth/page.tsx` y **no** dispara ningún request a `supabase.auth.signUp` (verificable en la pestaña Network del navegador).
-- [ ] Crear una cuenta con una contraseña que cumple las 5 reglas sigue el flujo normal de signup sin cambios.
-- [ ] Sin sesión activa, navegar a `/auth/actualizar-password` redirige a `/auth/recuperar`.
-- [ ] Con sesión activa, navegar a `/auth` redirige a `/`.
-- [ ] El resto de las rutas (`/juego`, `/juego/[id]`, `/juego/[id]/jugar`, `/salon`, `/acerca-de`, `/auth/recuperar`, `/auth/callback`) siguen siendo accesibles exactamente igual que antes, con o sin sesión.
-- [ ] `public.games` y `public.scores` tienen RLS habilitado (`mcp__supabase__get_advisors` type security ya no reporta los ERROR `rls_disabled_in_public` para ninguna de las dos tablas).
-- [ ] El catálogo (`/juego`) y el Salón de la Fama (`/salon`) siguen leyendo scores y juegos sin sesión (policy de `SELECT` pública funcionando).
-- [ ] Jugar como invitado y guardar un score sigue funcionando igual que hoy (`user_id: null` insertado correctamente vía policy `scores_guest_insert`).
-- [ ] Jugar logueado y guardar un score sigue funcionando igual que hoy, con `scores.user_id` poblado con el id real del usuario (policy `scores_own_insert`).
-- [ ] Intentar insertar (fuera de la UI normal, p. ej. vía API/SQL simulando el rol) un score como `anon` con `user_id` no nulo, o como `authenticated` con el `user_id` de otro usuario, falla por RLS.
-- [ ] No existe ninguna policy de `UPDATE`/`DELETE` en `scores`, ni de `INSERT`/`UPDATE`/`DELETE` en `games` — confirmable en el SQL de la migración aplicada.
-- [ ] Prerequisitos manuales aplicados en el dashboard de Supabase Auth: Password Requirements (mínimo 8 + minúsculas/mayúsculas/dígitos/símbolos), Leaked Password Protection activada, y Rate Limit de signups confirmado/ajustado (documentados como pasos manuales completados, no verificables por código).
-- [ ] `npm run lint` y `npm run build` terminan sin errores.
-- [ ] Ninguna de las 5 props de los componentes de juego, ni `AuthContext`/`UserContext`, ni los motores de juego (`components/games/*.tsx`) cambian — cero impacto fuera de lo declarado en el Scope.
+- [x] Los 3 headers de seguridad (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`) están presentes en la respuesta HTTP de cualquier ruta de la app.
+- [x] Intentar crear una cuenta con una contraseña que no cumple las 5 reglas (≥8 caracteres, minúscula, mayúscula, dígito, símbolo) muestra un error claro en `app/auth/page.tsx` y **no** dispara ningún request a `supabase.auth.signUp` (verificable en la pestaña Network del navegador).
+- [x] Crear una cuenta con una contraseña que cumple las 5 reglas sigue el flujo normal de signup sin cambios.
+- [x] Sin sesión activa, navegar a `/auth/actualizar-password` redirige a `/auth/recuperar`.
+- [x] Con sesión activa, navegar a `/auth` redirige a `/`.
+- [x] El resto de las rutas (`/juego`, `/juego/[id]`, `/juego/[id]/jugar`, `/salon`, `/acerca-de`, `/auth/recuperar`, `/auth/callback`) siguen siendo accesibles exactamente igual que antes, con o sin sesión.
+- [x] `public.games` y `public.scores` tienen RLS habilitado (`mcp__supabase__get_advisors` type security ya no reporta los ERROR `rls_disabled_in_public` para ninguna de las dos tablas).
+- [x] El catálogo (`/juego`) y el Salón de la Fama (`/salon`) siguen leyendo scores y juegos sin sesión (policy de `SELECT` pública funcionando).
+- [x] Jugar como invitado y guardar un score sigue funcionando igual que hoy (`user_id: null` insertado correctamente vía policy `scores_guest_insert`).
+- [x] Jugar logueado y guardar un score sigue funcionando igual que hoy, con `scores.user_id` poblado con el id real del usuario (policy `scores_own_insert`).
+- [x] Intentar insertar (fuera de la UI normal, p. ej. vía API/SQL simulando el rol) un score como `anon` con `user_id` no nulo, o como `authenticated` con el `user_id` de otro usuario, falla por RLS.
+- [x] No existe ninguna policy de `UPDATE`/`DELETE` en `scores`, ni de `INSERT`/`UPDATE`/`DELETE` en `games` — confirmable en el SQL de la migración aplicada.
+- [x] Prerequisitos manuales aplicados en el dashboard de Supabase Auth: Password Requirements (mínimo 8 + minúsculas/mayúsculas/dígitos/símbolos) ✅ y Rate Limit de signups ✅ confirmados/ajustados. **Leaked Password Protection NO se activó** — decisión explícita del usuario porque es una feature de plan pago de Supabase; queda como deuda técnica documentada, no como incumplimiento.
+- [x] `npm run lint` y `npm run build` terminan sin errores. `build` sin errores. `lint` reporta 18 errores/16 warnings, pero los 3 archivos tocados por este spec (`next.config.ts`, `app/auth/page.tsx`, `lib/supabase/middleware.ts`) están limpios — los problemas son preexistentes en `references/templates/*.jsx` (confirmado con `git diff main -- references/`, sin cambios), fuera del alcance de este spec.
+- [x] Ninguna de las 5 props de los componentes de juego, ni `AuthContext`/`UserContext`, ni los motores de juego (`components/games/*.tsx`) cambian — cero impacto fuera de lo declarado en el Scope.
 
 ## Decisions taken and discarded
 
@@ -134,6 +134,8 @@ Cada paso deja el proyecto compilando (`npm run build`) y navegable; se verifica
 - **No: CAPTCHA (hCaptcha/Turnstile) en el registro.** Ver decisión de rate limit nativo arriba — se descartó explícitamente a favor de la opción sin código nuevo.
 - **No: headers adicionales** (`Content-Security-Policy`, `Strict-Transport-Security`, `Permissions-Policy`). Se ciñe estrictamente a los 3 del checklist para evitar el riesgo de romper Supabase/fonts/scripts sin una auditoría dedicada de orígenes. Decisión explícita del usuario.
 - **No: policy de borrado de scores propios.** No hay funcionalidad de la UI que la necesite; agregarla sería alcance especulativo. Decisión explícita del usuario.
+- **No: activar Leaked Password Protection en el dashboard de Supabase Auth**, a pesar de estar en el Scope original. Es una feature de plan pago en este proyecto; el usuario decidió no activarla durante la implementación (Paso 5). Queda como WARN documentado y aceptado (`auth_leaked_password_protection`) en los advisors, deuda técnica pendiente de un upgrade de plan, no un error de implementación.
+- **No: revocar `EXECUTE` sobre `public.rls_auto_enable()`** (reconfirmado durante la implementación). El usuario preguntó si convenía corregir los 2 WARN de esta función; se le recordó que está fuera de alcance de este spec (ver punto anterior) y se descartó tocarlo en esta rama.
 
 ## Identified risks
 
