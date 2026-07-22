@@ -21,6 +21,7 @@ Detalle completo de cada uno en su archivo `.claude/agents/<nombre>.md`.
 - `skin-designer`: audita e implementa selector de skins (paletas de color, patrón Tetris) para un juego concreto del catálogo. Edita código real.
 - `mobile-porter`: audita e implementa controles táctiles móviles (SPEC 10) para un juego concreto del catálogo. Edita código real.
 - `game-performance`: audita e implementa los patrones de rendimiento de SPEC 12 (fondo offscreen, shadows condicionadas a `glow`, cacheo por-frame) para un juego concreto del catálogo. Edita código real.
+- `security-auditor`: audita toda la app (no un juego puntual) contra el baseline de seguridad de SPEC 13/14 — RLS y policies de `games`/`scores`, complejidad de password, headers HTTP, protección de rutas del proxy. Solo lectura: reporta hallazgos con el fix propuesto, no edita código ni aplica migraciones.
 
 ## Project
 
